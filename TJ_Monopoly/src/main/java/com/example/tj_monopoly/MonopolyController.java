@@ -526,9 +526,9 @@ public class MonopolyController implements Initializable {
     }
     //endregion
 
-    //User Actions
+    //region User Actions
     public void buyProperty(){
-
+        System.out.println("testing");
     }
 
     public void endTurn(){
