@@ -21,7 +21,7 @@ public class MonopolyController implements Initializable {
 
     //region FXML Compontents
     @FXML
-    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn;
+    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, buyHousing_btn, endTurn_btn;
     @FXML
     ImageView firstDie_img, secondDie_img, playerPiece1, tilePreview_img, hamburgerIcon_img;
     @FXML
@@ -32,7 +32,7 @@ public class MonopolyController implements Initializable {
     @FXML
     AnchorPane outerBoard_ap, innerBoard_ap, tilePreviewColor_ap, tilePreviewCard_ap, hamburgerMenu_ap, hamburgerBackground_ap;
     @FXML
-    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyChange_lbl;
+    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyChange_lbl, playerMoney_lbl;
     //endregion
 
     Image[] diceImages = {
@@ -65,7 +65,9 @@ public class MonopolyController implements Initializable {
     AnchorPane[] spaces;
     Tile[] tiles = new Tile[40];
     boolean isPreviewCardCentered = false;
+    boolean cardNeedsToBeOpened = false;
     int startingMoney = 1500;
+    int newTileIndex;
     final Color MONEYGREEN = Color.rgb(22, 129, 24);
     final Color NEGATIVERED = Color.rgb(255,51,51);
 
@@ -84,7 +86,7 @@ public class MonopolyController implements Initializable {
 
     //region Setup
     public void setUpPlayers(){
-        player = new Player(0, playerPiece1, startingMoney, false);
+        player = new Player(0, playerPiece1, startingMoney, false, false);
     }
     public void setUpSpaces(){
         spaces = new AnchorPane[]{space0, space1, space2, space3, space4, space5, space6, space7, space8, space9, space10, space11,
@@ -107,6 +109,7 @@ public class MonopolyController implements Initializable {
 
 
             Property property = null;
+            boolean isProperty = false;
             ImageView imgV = null;
             Image img = null;
             boolean isChanceOrChest = false;
@@ -117,7 +120,8 @@ public class MonopolyController implements Initializable {
                 img = imgV.getImage();
 
                 Label priceLbl = (Label) spaces[i].getChildren().get(1);
-                property = new Property(priceLbl.getText());
+                property = new Property(priceLbl.getText(), false, false);
+                isProperty = true;
             }else{
 
                 imgV = (ImageView) spaces[i].getChildren().get(0);
@@ -135,9 +139,12 @@ public class MonopolyController implements Initializable {
                 isChanceOrChest = true;
             }
 
-            tiles[i] = new Tile(tileName[i], property, spaces[i], img, isCorner, isChanceOrChest);
+            tiles[i] = new Tile(tileName[i], property, isProperty, spaces[i], img, isCorner, isChanceOrChest);
         }
 
+    }
+    public void setUpLabels(){
+        playerMoney_lbl.setText("$" + player.getMoney());
     }
     //endregion
 
@@ -158,6 +165,9 @@ public class MonopolyController implements Initializable {
         die2PulseTransition.play();
     }
     public void pulseCard(){
+
+        cardNeedsToBeOpened = true;
+
         pulseCardTransition = new ScaleTransition(Duration.seconds(0.5), tilePreviewCard_ap);
         pulseCardTransition.setByX(0.03f);
         pulseCardTransition.setByY(0.03f);
@@ -167,7 +177,7 @@ public class MonopolyController implements Initializable {
     }
     //endregion
 
-    //region Dice Clicked
+    //region Dice Clicked (All happens without user input after dice are clicked)
     public void rollDice(){
 
         if(isPreviewCardCentered){
@@ -179,6 +189,8 @@ public class MonopolyController implements Initializable {
 
         audio.setFile(2);
         audio.play();
+
+        player.setHasRolled(true);
 
         //Dice will flicker every 0.1 seconds
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event ->{
@@ -196,17 +208,24 @@ public class MonopolyController implements Initializable {
         timeline.play();
 
         timeline.setOnFinished(event -> {
-            handleBoardAfterDiceRoll(randomIndexD1 + 1 + randomIndexD2 + 1);
+            handleBoardAfterDiceRoll(randomIndexD1 + 1, randomIndexD2 + 1);
         });
     }
-    public void handleBoardAfterDiceRoll(int numberOfSpaces){
+    public void handleBoardAfterDiceRoll(int die1Num, int die2Num){
 
-        numberOfSpaces = 2;
+        int numberOfSpaces = die1Num + die2Num;
+
+        //Rolled doubles
+        boolean rolledDoubles = die1Num == die2Num;
+
+        if(rolledDoubles){
+            player.setHasRolled(false);
+        }
         
         int tileBeforeMove = player.getCurrentTileIndex();
 
         //Checking to see if new tile will be going back to start of list (going to or past go)
-        int newTileIndex = (tileBeforeMove + numberOfSpaces) % tiles.length;
+        newTileIndex = (tileBeforeMove + numberOfSpaces) % tiles.length;
         player.setCurrentTile(newTileIndex);
 
         //Dividing by 10 to get first digit, getting the board side (since it's an int if number is less than 10
@@ -218,9 +237,9 @@ public class MonopolyController implements Initializable {
 
         rotateBoard(numberOfSidesJumpedTo);
 
-        checkForPassedGo(tileBeforeMove, newTileIndex);
+        handlePassedGo(tileBeforeMove);
 
-        movePlayerPiece(newTileIndex, boardSideAfterMoving);
+        movePlayerPiece(boardSideAfterMoving);
 
         setUpTilePreview(newTileIndex);
     }
@@ -268,17 +287,18 @@ public class MonopolyController implements Initializable {
         }
     }
 
-    public void movePlayerPiece(int _newTileIndex, int _boardSideAfterMoving){
+    public void movePlayerPiece(int _boardSideAfterMoving){
 
-        checkForSpecialTile(_newTileIndex);
+        handleNecessaryTileActions();
+        setAllowedUserActions();
 
-        spaces[_newTileIndex].getChildren().add(player.getPlayerIcon());
+        spaces[newTileIndex].getChildren().add(player.getPlayerIcon());
 
         //Set player icon to default X and Y
         player.getPlayerIcon().setLayoutX(25);
         player.getPlayerIcon().setLayoutY(25);
 
-        if(!tiles[_newTileIndex].isCornerTile()){
+        if(!tiles[newTileIndex].isCornerTile()){
 
             //If new tile is not a corner tile, offset is necessary based on which side of the board
             //the new tile is on. By default, player location is set to corner offset
@@ -290,19 +310,28 @@ public class MonopolyController implements Initializable {
         }
     }
 
-    public void checkForPassedGo(int _tileBeforeMove, int _tileAfterMove){
+    //region Tile Landed On Actions
+    public void handlePassedGo(int _tileBeforeMove){
 
-        if(_tileBeforeMove > _tileAfterMove){
-            player.addMoney(200);
+        if(_tileBeforeMove > newTileIndex){
+            gainedMoney(200);
         }
     }
-    public void checkForSpecialTile(int _newTileIndex){
+    public void handleNecessaryTileActions(){
 
-        switch (_newTileIndex){
+        Tile tile = tiles[newTileIndex];
+
+        if(tile.isProperty) {
+            if (tile.getProperty().isOwned() && !tile.getProperty().isMortgaged()) {
+                //is property owned && not mortgaged -> subtract rent
+            }
+        }
+
+        switch (newTileIndex){
 
             case 4:
                 //$200 Tax
-                player.subtractMoney(200);
+                lostMoney(200);
 
                 break;
             case 10:
@@ -319,16 +348,54 @@ public class MonopolyController implements Initializable {
                 break;
             case 38:
                 //$100 Tax
-                player.subtractMoney(100);
+                lostMoney(100);
 
                 break;
         }
     }
 
+    public void setAllowedUserActions(){
+
+        //Disable End turn button if user has not rolled or if they have a card to open
+        if(!player.hasRolled() || cardNeedsToBeOpened){
+            endTurn_btn.setDisable(true);
+        }else{
+            endTurn_btn.setDisable(false);
+        }
+
+        //Disable dice buttons if player has already rolled
+        if(player.hasRolled()){
+            firstDie_btn.setDisable(true);
+            secondDie_btn.setDisable(true);
+        }
+
+        //check to see if player is in jail
+
+        //Disable buy button if tile can not be bought
+        buyProperty_btn.setDisable(!tileCanBePurchased());
+
+        //Disable buy housing button if player has no monopolies
+        buyHousing_btn.setDisable(player.getMonopolies().isEmpty());
+
+
+    }
+
+    public boolean tileCanBePurchased(){
+
+        if(tiles[newTileIndex].isProperty()){
+
+            //If the tile is a property and not owned, return true because it can be purchased
+            return !tiles[newTileIndex].getProperty().isOwned();
+        }
+
+        return false;
+    }
+    //endregion
+
     //region Tile Preview
     public void setUpTilePreview(int _newTileIndex){
 
-        boolean isProperty = tiles[_newTileIndex].getProperty() != null;
+        boolean isProperty = tiles[_newTileIndex].isProperty();
 
         //region Preview Image
         Image img = tiles[_newTileIndex].getImg();
@@ -446,6 +513,7 @@ public class MonopolyController implements Initializable {
         openCard_btn.setVisible(false);
 
         isPreviewCardCentered = true;
+        cardNeedsToBeOpened = false;
     }
 
     public void movePreviewCardBack(){
@@ -458,7 +526,34 @@ public class MonopolyController implements Initializable {
     }
     //endregion
 
+    //User Actions
+    public void buyProperty(){
+
+    }
+
+    public void endTurn(){
+        player.setHasRolled(false);
+
+        buyProperty_btn.setDisable(true);
+        endTurn_btn.setDisable(true);
+
+        firstDie_btn.setDisable(false);
+        secondDie_btn.setDisable(false);
+        pulseDice();
+    }
+    //endregion
+
     //region Money Animations
+    public void gainedMoney(int _moneyGained){
+        player.addMoney(_moneyGained);
+        moneyGainedAnimation(_moneyGained);
+        playerMoney_lbl.setText("$" + player.getMoney());
+    }
+    public void lostMoney(int _moneyLost){
+        player.subtractMoney(_moneyLost);
+        moneyLostAnimation(_moneyLost);
+        playerMoney_lbl.setText("$" + player.getMoney());
+    }
     public void moneyGainedAnimation(int _moneyGained){
 
         moneyChange_lbl.setTextFill(MONEYGREEN);

@@ -7,14 +7,16 @@ public class Tile {
 
     String name;
     Property property;
+    boolean isProperty;
     AnchorPane anchor;
     Image img;
     boolean isCornerTile;
     boolean isChanceOrChest;
 
-    public Tile(String _name, Property _property, AnchorPane _anchor, Image _img, boolean _isCornerTile, boolean _isChanceOrChest){
+    public Tile(String _name, Property _property, boolean _isProperty, AnchorPane _anchor, Image _img, boolean _isCornerTile, boolean _isChanceOrChest){
         name = _name;
         property = _property;
+        isProperty = _isProperty;
         anchor = _anchor;
         img = _img;
         isCornerTile = _isCornerTile;
@@ -26,6 +28,9 @@ public class Tile {
     }
     public Property getProperty(){
         return property;
+    }
+    public boolean isProperty(){
+        return isProperty;
     }
     public AnchorPane getAnchor(){
         return anchor;

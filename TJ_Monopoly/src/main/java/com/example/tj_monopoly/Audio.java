@@ -13,12 +13,13 @@ public class Audio {
 
         try {
 //              Files MUST be WAV and 16 BIT
-            soundURL[0] = new URL("file:src/main/resources/audio/menuSelect.wav");
-            soundURL[1] = new URL("file:src/main/resources/audio/transitionWoosh.wav");
-            soundURL[2] = new URL("file:src/main/resources/audio/legoBuild.wav");
-            soundURL[3] = new URL("file:src/main/resources/audio/starWarsTheme.wav");
-            soundURL[4] = new URL("file:src/main/resources/audio/tatooineTheme.wav");
-            soundURL[5] = new URL("file:src/main/resources/audio/openCard.wav");
+
+            soundURL[0] = new URL("file:TJ_Monopoly/src/main/resources/audio/menuSelect.wav");
+            soundURL[1] = new URL("file:TJ_Monopoly/src/main/resources/audio/transitionWoosh.wav");
+            soundURL[2] = new URL("file:TJ_Monopoly/src/main/resources/audio/legoBuild.wav");
+            soundURL[3] = new URL("file:TJ_Monopoly/src/main/resources/audio/starWarsTheme.wav");
+            soundURL[4] = new URL("file:TJ_Monopoly/src/main/resources/audio/tatooineTheme.wav");
+            soundURL[5] = new URL("file:TJ_Monopoly/src/main/resources/audio/openCard.wav");
 
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);

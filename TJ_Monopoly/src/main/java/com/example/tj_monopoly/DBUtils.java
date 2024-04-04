@@ -52,6 +52,7 @@ public class DBUtils {
             movieTicketController.setUpPlayers();
             movieTicketController.setUpSpaces();
             movieTicketController.setUpTiles();
+            movieTicketController.setUpLabels();
             //movieTicketController.passObjectsToScene(stage, _admin, _movieList, _transactionList);
         }
 

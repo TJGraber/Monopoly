@@ -492,7 +492,7 @@
             <AnchorPane layoutX="6.0" prefHeight="165.0" prefWidth="280.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
                <children>
                   <Label layoutX="123.0" layoutY="23.0" text="Player:" />
-                  <Label layoutX="126.0" layoutY="48.0" text="\$$$" />
+                  <Label fx:id="playerMoney_lbl" layoutX="126.0" layoutY="48.0" text="\$" />
                   <Label layoutX="126.0" layoutY="106.0" text="Properties" />
                </children>
             </AnchorPane>
@@ -501,11 +501,11 @@
                   <Label layoutX="27.0" layoutY="15.0" text="Player Rolled a:" />
                   <Label layoutX="27.0" layoutY="43.0" text="Player Landed on:" />
                   <Label layoutX="27.0" layoutY="67.0" text="Money Owed or Cost" />
-                  <Button layoutX="25.0" layoutY="96.0" mnemonicParsing="false" text="Buy Property" />
+                  <Button fx:id="buyProperty_btn" disable="true" layoutX="25.0" layoutY="96.0" mnemonicParsing="false" text="Buy Property" />
                   <Button layoutX="123.0" layoutY="96.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Trade" />
-                  <Button layoutX="196.0" layoutY="96.0" mnemonicParsing="false" text="End Turn" />
+                  <Button fx:id="endTurn_btn" disable="true" layoutX="196.0" layoutY="96.0" mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
                   <Button layoutX="24.0" layoutY="131.0" mnemonicParsing="false" text="Mortgage Property" />
-                  <Button layoutX="158.0" layoutY="131.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Buy Housing" />
+                  <Button fx:id="buyHousing_btn" disable="true" layoutX="158.0" layoutY="131.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Buy Housing" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="20.0" layoutY="404.0" prefHeight="131.0" prefWidth="281.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="400.0">
