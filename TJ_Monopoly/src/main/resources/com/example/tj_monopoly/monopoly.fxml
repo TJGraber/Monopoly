@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="725.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tj_monopoly.MonopolyController">
+   <children>
+      <AnchorPane fx:id="outerBoard_ap" layoutX="-2.0" layoutY="-4.0" prefHeight="730.0" prefWidth="841.0" style="-fx-background-color: gray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="555.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane fx:id="innerBoard_ap" prefHeight="494.0" prefWidth="471.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="115.0">
+               <children>
+                  <ImageView fitHeight="494.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@../../../space.jpg" />
+                     </image>
+                  </ImageView>
+                  <Button fx:id="firstDie_btn" mnemonicParsing="false" onAction="#rollDice" styleClass="die_btn" stylesheets="@style.css" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0">
+                     <graphic>
+                        <ImageView fx:id="firstDie_img" fitHeight="125.0" fitWidth="130.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../dSixFixed.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="secondDie_btn" layoutX="256.0" layoutY="153.0" mnemonicParsing="false" onAction="#rollDice" styleClass="die_btn" stylesheets="@style.css" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="175.0">
+                     <graphic>
+                        <ImageView fx:id="secondDie_img" fitHeight="125.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../dSixFixed.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="150.0" layoutY="330.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../starWarsLogo.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="183.0" layoutY="420.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="147.0" AnchorPane.rightAnchor="146.66666666666663">
+                     <image>
+                        <Image url="@../../../monopolyLogo.png" />
+                     </image>
+                  </ImageView>
+                  <AnchorPane fx:id="tilePreviewCard_ap" layoutX="-5.0" layoutY="33.0" prefHeight="285.0" prefWidth="194.0" style="-fx-background-color: #c7eaca;" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="25.0">
+                     <children>
+                        <AnchorPane fx:id="tilePreviewColor_ap" prefHeight="65.0" prefWidth="55.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <children>
+                              <Label fx:id="tilePreviewName_lbl" alignment="CENTER" layoutX="83.0" layoutY="24.0" text="Go" textAlignment="CENTER" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <font>
+                                    <Font size="20.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </AnchorPane>
+                        <Label fx:id="tilePreviewPrice_lbl" alignment="CENTER" textAlignment="CENTER" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                        </Label>
+                        <ImageView fx:id="tilePreview_img" fitHeight="150.0" fitWidth="200.0" layoutX="20.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../monopolyGo-removebg-preview.png" />
+                           </image>
+                        </ImageView>
+                        <Button fx:id="openCard_btn" layoutX="39.0" layoutY="100.0" mnemonicParsing="false" onAction="#openCardAnimate" styleClass="openCard_btn" stylesheets="@style.css" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space0" layoutX="576.0" layoutY="601.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #c7eaca;" styleClass="board_cell" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+                     <image>
+                        <Image url="@../../../monopolyGo-removebg-preview.png" />
+                     </image>
+                  </ImageView>
+                  <Label layoutX="35.0" layoutY="55.0" prefWidth="75.0" rotate="-45.0" text="Collect 200 Credits" textAlignment="CENTER" wrapText="true" />
+                  <Label text="Go" visible="false" />
+                  <ImageView fx:id="playerPiece1" fitHeight="50.0" fitWidth="75.0" layoutX="25.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../vaderIcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space1" layoutX="555.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="115.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: brown;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" layoutX="14.0" layoutY="66.0" text="\$60" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/1_battleDroid.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space2" layoutX="500.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="170.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="6.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../rebellionLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space3" layoutX="445.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="225.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: brown;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" text="\$60" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="8.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/2_grevious.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space4" layoutX="390.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="280.0">
+               <children>
+                  <ImageView pickOnBounds="true" preserveRatio="true" />
+                  <Label layoutX="4.0" layoutY="40.0" text="\$200 Tax" />
+               </children></AnchorPane>
+            <AnchorPane fx:id="space5" layoutX="335.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="335.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" text="\$200" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="6.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../propertyImages/falcon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space6" layoutX="280.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="390.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: cyan;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" text="\$100" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/3_rex.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space7" layoutX="225.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="445.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="6.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../empireLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space8" layoutX="170.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="500.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: cyan;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" text="\$100" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="12.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/4_ahsoka.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space10" layoutX="318.0" layoutY="431.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #c7eaca;" styleClass="board_cell" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="75.0" fitWidth="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <image>
+                        <Image url="@../../../jailSquare.png" />
+                     </image></ImageView>
+                  <Label layoutX="30.0" layoutY="52.0" rotate="45.0" text="Jail" />
+                  <Label layoutX="82.0" layoutY="5.0" rotate="45.0" text="In" />
+                  <Label layoutY="35.0" prefHeight="0.0" prefWidth="25.0" rotate="90.0" text="Just" />
+                  <Label alignment="CENTER" layoutX="20.0" layoutY="83.0" prefHeight="26.0" prefWidth="80.0" text="Visiting" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space11" layoutX="685.0" layoutY="539.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: pink;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$140" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="32.0">
+                     <image>
+                        <Image url="@../../../propertyImages/6_stormtrooper.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space12" layoutX="700.0" layoutY="467.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="170.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$150" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/deathStar.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space13" layoutX="673.0" layoutY="395.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="225.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: pink;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$140" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="40.0" fitWidth="50.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/7_krennic.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space14" layoutX="678.0" layoutY="336.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="280.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: pink;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$160" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/8_grandInquisitor.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space15" layoutX="685.0" layoutY="276.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="335.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$200" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/slave1.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space16" layoutX="685.0" layoutY="214.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="390.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$180" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="48.0" fitWidth="50.0" layoutY="2.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="32.0">
+                     <image>
+                        <Image url="@../../../propertyImages/9_wedge.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space17" layoutX="672.0" layoutY="148.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="445.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="25.0" layoutY="6.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                     <image>
+                        <Image url="@../../../rebellionLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space9" layoutX="115.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="555.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: cyan;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" text="\$120" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/5_fives.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space18" layoutX="673.0" layoutY="110.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="500.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="90.0" text="\$180" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="32.0">
+                     <image>
+                        <Image url="@../../../propertyImages/10_andor.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space19" layoutX="683.0" layoutY="120.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_left" stylesheets="@style.css" AnchorPane.bottomAnchor="555.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" layoutX="1.0" rotate="90.0" text="\$200" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="48.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.leftAnchor="25.0">
+                     <image>
+                        <Image url="@../../../propertyImages/11_hanSolo.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space20" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-border-style: hidden hidden solid hidden; -fx-background-color: #c7eaca;" styleClass="board_cell" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" rotate="135.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
+                     <image>
+                        <Image url="@../../../freeParking.png" />
+                     </image></ImageView>
+                  <Label layoutX="21.0" layoutY="41.0" rotate="135.0" text="Free" AnchorPane.leftAnchor="63.0" AnchorPane.topAnchor="66.0" />
+                  <Label layoutX="3.0" layoutY="20.0" rotate="135.0" text="Parking" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="18.0" />
+                  <Label layoutX="17.0" layoutY="29.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space21" layoutX="132.0" layoutY="612.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$220" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="5.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="15.0">
+                     <image>
+                        <Image url="@../../../propertyImages/12_countDooku.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space22" layoutX="142.0" layoutY="622.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="170.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="5.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                     <image>
+                        <Image url="@../../../empireLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space23" layoutX="249.0" layoutY="14.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="225.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$220" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/13_darthMaul.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space24" layoutX="437.0" layoutY="135.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="280.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: red;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$220" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="15.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="17.0">
+                     <image>
+                        <Image url="@../../../propertyImages/14_kyloRen.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space25" layoutX="447.0" layoutY="145.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$200" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="5.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true" rotate="180.0">
+                     <image>
+                        <Image url="@../../../propertyImages/starDestroyer.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space26" layoutX="457.0" layoutY="155.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="390.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$260" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="7.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="16.0">
+                     <image>
+                        <Image url="@../../../propertyImages/15_ploKoon.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space27" layoutX="561.0" layoutY="10.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="445.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$260" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="16.0">
+                     <image>
+                        <Image url="@../../../propertyImages/16_anakin.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space28" layoutX="571.0" layoutY="20.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" rotate="180.0" text="\$150" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutX="5.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="25.0">
+                     <image>
+                        <Image url="@../../../propertyImages/starkillerBase.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space29" layoutX="581.0" layoutY="30.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_top" stylesheets="@style.css" AnchorPane.leftAnchor="555.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <AnchorPane prefHeight="30.0" prefWidth="55.0" style="-fx-background-color: yellow;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Label alignment="CENTER" layoutX="1.0" rotate="180.0" text="\$280" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="1.0" />
+                  <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="6.0" pickOnBounds="true" preserveRatio="true" rotate="180.0" AnchorPane.topAnchor="16.0">
+                     <image>
+                        <Image url="@../../../propertyImages/17_maceWindu.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space30" layoutX="609.0" layoutY="102.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #c7eaca; -fx-border-style: hidden hidden hidden solid;" styleClass="board_cell" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <ImageView fitHeight="60.0" fitWidth="60.0" layoutX="4.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" rotate="225.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                     <image>
+                        <Image url="@../../../goToJail.png" />
+                     </image></ImageView>
+                  <Label layoutX="10.0" layoutY="70.0" rotate="225.0" text="Go to" />
+                  <Label layoutX="69.0" layoutY="15.0" rotate="225.0" text="Jail" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="12.0" />
+                  <Label layoutX="80.0" layoutY="23.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space31" layoutX="541.0" layoutY="123.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="115.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$300" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="40.0" fitWidth="50.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/18_yoda.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space32" layoutX="607.0" layoutY="173.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="170.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$300" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="48.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="28.0">
+                     <image>
+                        <Image url="@../../../propertyImages/19_luke.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space33" layoutX="576.0" layoutY="222.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="225.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="25.0">
+                     <image>
+                        <Image url="@../../../rebellionLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space34" layoutX="576.0" layoutY="285.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="280.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: green;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$320" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="45.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="28.0">
+                     <image>
+                        <Image url="@../../../propertyImages/20_obiWan.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space35" layoutX="576.0" layoutY="348.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="335.0">
+               <children>
+                  <AnchorPane prefHeight="0.0" prefWidth="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$200" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="45.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="35.0">
+                     <image>
+                        <Image url="@../../../propertyImages/atatWalker.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space36" layoutX="576.0" layoutY="411.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="390.0">
+               <children>
+                  <ImageView fitHeight="50.0" fitWidth="45.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="25.0">
+                     <image>
+                        <Image url="@../../../empireLogo.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane fx:id="space37" layoutX="576.0" layoutY="474.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="445.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$350" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="46.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="28.0">
+                     <image>
+                        <Image url="@../../../propertyImages/21_palpatine.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="space38" layoutX="576.0" layoutY="537.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="500.0">
+               <children>
+                  <ImageView pickOnBounds="true" preserveRatio="true" />
+                  <Label layoutX="30.0" layoutY="10.0" rotate="270.0" text="\$100 Tax" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children></AnchorPane>
+            <AnchorPane fx:id="space39" layoutX="586.0" layoutY="547.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="555.0">
+               <children>
+                  <AnchorPane prefHeight="55.0" prefWidth="30.0" style="-fx-background-color: blue;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Label alignment="CENTER" rotate="270.0" text="\$350" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0" />
+                  <ImageView fitHeight="46.0" fitWidth="50.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" AnchorPane.rightAnchor="30.0">
+                     <image>
+                        <Image url="@../../../propertyImages/22_darthVader.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="742.0" layoutY="147.0" prefHeight="685.0" prefWidth="518.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="740.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+         <children>
+            <AnchorPane layoutX="6.0" prefHeight="165.0" prefWidth="280.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <Label layoutX="123.0" layoutY="23.0" text="Player:" />
+                  <Label layoutX="126.0" layoutY="48.0" text="\$$$" />
+                  <Label layoutX="126.0" layoutY="106.0" text="Properties" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="21.0" layoutY="188.0" prefHeight="165.0" prefWidth="280.0" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="205.0">
+               <children>
+                  <Label layoutX="27.0" layoutY="15.0" text="Player Rolled a:" />
+                  <Label layoutX="27.0" layoutY="43.0" text="Player Landed on:" />
+                  <Label layoutX="27.0" layoutY="67.0" text="Money Owed or Cost" />
+                  <Button layoutX="25.0" layoutY="96.0" mnemonicParsing="false" text="Buy Property" />
+                  <Button layoutX="123.0" layoutY="96.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Trade" />
+                  <Button layoutX="196.0" layoutY="96.0" mnemonicParsing="false" text="End Turn" />
+                  <Button layoutX="24.0" layoutY="131.0" mnemonicParsing="false" text="Mortgage Property" />
+                  <Button layoutX="158.0" layoutY="131.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Buy Housing" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="20.0" layoutY="404.0" prefHeight="131.0" prefWidth="281.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="400.0">
+               <children>
+                  <Label layoutX="110.0" layoutY="30.0" text="Other Player Info" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="160.0" prefWidth="94.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <AnchorPane fx:id="hamburgerBackground_ap" layoutX="146.0" prefHeight="43.0" prefWidth="51.0" style="-fx-background-color: gray;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button fx:id="hamburger_btn" mnemonicParsing="false" onAction="#burgerMenuClicked" styleClass="hamburger_btn" stylesheets="@style.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView fx:id="hamburgerIcon_img" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../hamburgerIcon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <AnchorPane fx:id="hamburgerMenu_ap" prefHeight="113.0" prefWidth="94.0" style="-fx-background-color: grey;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                     <children>
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button layoutY="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save As" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button layoutY="80.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Quit" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <Label fx:id="moneyChange_lbl" layoutX="160.0" opacity="0.0" text="+$200" textFill="#168118" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="72.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

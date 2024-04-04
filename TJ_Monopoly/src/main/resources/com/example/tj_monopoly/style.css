@@ -1,0 +1,47 @@
+/* #FFE81F = Banana Yellow; */
+
+.start_btn{
+    -fx-text-fill: #FFE81F;
+    -fx-cursor: hand;
+    -fx-background-color: none;
+}
+
+.start_btn:hover{
+    -fx-text-fill: #9b870c;
+}
+
+.start_btn:focused{
+    -fx-text-fill: #9b870c;
+}
+
+.board_cell_bottom, .board_cell_left, .board_cell_top, .board_cell_right{
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-color: #c7eaca;
+}
+.board_cell_bottom{
+    -fx-border-style: solid solid hidden solid;
+}
+.board_cell_left{
+    -fx-border-style: solid solid solid hidden;
+}
+.board_cell_top{
+    -fx-border-style: hidden solid solid solid;
+}
+.board_cell_right{
+    -fx-border-style: solid hidden solid solid;
+}
+
+.die_btn, .openCard_btn, .hamburger_btn, .hamburgerMenu_btn{
+    -fx-cursor: hand;
+    -fx-background-color: none;
+}
+
+.hamburger_btn:hover{
+    -fx-background-color: #999DA0;
+    -fx-cursor: hand;
+}
+.hamburgerMenu_btn:hover{
+    -fx-background-color: #999DA0;
+    -fx-cursor: hand;
+}
