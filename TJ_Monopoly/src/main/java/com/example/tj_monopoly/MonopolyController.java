@@ -71,7 +71,6 @@ public class MonopolyController implements Initializable {
     final Color MONEYGREEN = Color.rgb(22, 129, 24);
     final Color NEGATIVERED = Color.rgb(255,51,51);
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -164,6 +163,16 @@ public class MonopolyController implements Initializable {
         die2PulseTransition.setAutoReverse(true);
         die2PulseTransition.play();
     }
+    public void stopPulsingDice(){
+        firstDie_btn.setScaleX(1);
+        firstDie_btn.setScaleY(1);
+
+        secondDie_btn.setScaleX(1);
+        secondDie_btn.setScaleY(1);
+
+        die1PulseTransition.stop();
+        die2PulseTransition.stop();
+    }
     public void pulseCard(){
 
         cardNeedsToBeOpened = true;
@@ -175,6 +184,13 @@ public class MonopolyController implements Initializable {
         pulseCardTransition.setAutoReverse(true);
         pulseCardTransition.play();
     }
+
+    public void stopPulsingCard(){
+        openCard_btn.setScaleX(1);
+        openCard_btn.setScaleY(1);
+
+        pulseCardTransition.stop();
+    }
     //endregion
 
     //region Dice Clicked (All happens without user input after dice are clicked)
@@ -184,13 +200,14 @@ public class MonopolyController implements Initializable {
             movePreviewCardBack();
         }
 
-        die1PulseTransition.stop();
-        die2PulseTransition.stop();
+        stopPulsingDice();
 
         audio.setFile(2);
         audio.play();
 
         player.setHasRolled(true);
+
+        movePreviewCardBack();
 
         //Dice will flicker every 0.1 seconds
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event ->{
@@ -215,8 +232,11 @@ public class MonopolyController implements Initializable {
 
         int numberOfSpaces = die1Num + die2Num;
 
+        numberOfSpaces = 2;
+
         //Rolled doubles
         boolean rolledDoubles = die1Num == die2Num;
+        rolledDoubles = true;
 
         if(rolledDoubles){
             player.setHasRolled(false);
@@ -235,13 +255,13 @@ public class MonopolyController implements Initializable {
 
         int numberOfSidesJumpedTo = getNumSidesJumped(boardSideBeforeMoving, boardSideAfterMoving);
 
-        rotateBoard(numberOfSidesJumpedTo);
+        setUpTilePreview(newTileIndex);
 
-        handlePassedGo(tileBeforeMove);
+        rotateBoard(numberOfSidesJumpedTo);
 
         movePlayerPiece(boardSideAfterMoving);
 
-        setUpTilePreview(newTileIndex);
+        handlePassedGo(tileBeforeMove);
     }
 
     public int getNumSidesJumped(int _boardSideBeforeMoving, int _boardSideAfterMoving){
@@ -358,15 +378,19 @@ public class MonopolyController implements Initializable {
 
         //Disable End turn button if user has not rolled or if they have a card to open
         if(!player.hasRolled() || cardNeedsToBeOpened){
+
             endTurn_btn.setDisable(true);
         }else{
             endTurn_btn.setDisable(false);
         }
 
         //Disable dice buttons if player has already rolled
-        if(player.hasRolled()){
+        if(player.hasRolled() || cardNeedsToBeOpened){
             firstDie_btn.setDisable(true);
             secondDie_btn.setDisable(true);
+        }else{
+            firstDie_btn.setDisable(false);
+            secondDie_btn.setDisable(false);
         }
 
         //check to see if player is in jail
@@ -480,7 +504,7 @@ public class MonopolyController implements Initializable {
 
     //region Community Chest and Chance Cards
     public void openCardAnimate(){
-        pulseCardTransition.stop();
+        stopPulsingCard();
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(1.5), tilePreviewCard_ap);
         translateTransition.setToX(100);
@@ -514,6 +538,8 @@ public class MonopolyController implements Initializable {
 
         isPreviewCardCentered = true;
         cardNeedsToBeOpened = false;
+
+        setAllowedUserActions();
     }
 
     public void movePreviewCardBack(){
@@ -534,12 +560,13 @@ public class MonopolyController implements Initializable {
     public void endTurn(){
         player.setHasRolled(false);
 
-        buyProperty_btn.setDisable(true);
-        endTurn_btn.setDisable(true);
+//        buyProperty_btn.setDisable(true);
+//        endTurn_btn.setDisable(true);
 
-        firstDie_btn.setDisable(false);
-        secondDie_btn.setDisable(false);
         pulseDice();
+        movePreviewCardBack();
+
+        setAllowedUserActions();
     }
     //endregion
 
