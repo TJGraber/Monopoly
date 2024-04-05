@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -9,11 +12,132 @@
 
 <AnchorPane prefHeight="725.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.tj_monopoly.MonopolyController">
    <children>
-      <AnchorPane fx:id="outerBoard_ap" layoutX="-2.0" layoutY="-4.0" prefHeight="730.0" prefWidth="841.0" style="-fx-background-color: gray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="555.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="742.0" layoutY="147.0" prefHeight="685.0" prefWidth="518.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="740.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+         <children>
+            <AnchorPane layoutX="6.0" prefHeight="194.0" prefWidth="485.0" AnchorPane.bottomAnchor="480.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <Label layoutX="123.0" layoutY="23.0" text="Player:" />
+                  <Label fx:id="playerMoney_lbl" layoutX="126.0" layoutY="48.0" text="\$" />
+                  <Label layoutX="126.0" layoutY="106.0" text="Properties" />
+                  <TableView layoutX="235.0" layoutY="10.0" prefHeight="149.0" prefWidth="200.0">
+                    <columns>
+                      <TableColumn prefWidth="75.0" text="C1" />
+                      <TableColumn prefWidth="75.0" text="C2" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="21.0" layoutY="188.0" prefHeight="321.0" prefWidth="485.0" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="205.0">
+               <children>
+                  <Label layoutX="153.0" layoutY="14.0" text="Player Landed on:" />
+                  <Label layoutX="309.0" layoutY="13.0" text="Money Owed or Cost" />
+                  <Button fx:id="buyProperty_btn" disable="true" layoutY="50.0" mnemonicParsing="false" onAction="#buyProperty" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../btn_coruscantWithText.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="0.1" />
+                     </padding></Button>
+                  <Button disable="true" layoutY="100.0" mnemonicParsing="false" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../btn_mosEisleyWithText.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="0.1" />
+                     </padding></Button>
+                  <Button fx:id="mortgageProperty_btn" disable="true" layoutY="150.0" mnemonicParsing="false" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../btn_cloudCityWithText.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="0.1" />
+                     </padding></Button>
+                  <Button fx:id="buyHousing_btn" disable="true" layoutY="200.0" mnemonicParsing="false" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../btn_nabooWithText.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="0.1" />
+                     </padding></Button>
+                  <Button fx:id="endTurn_btn" disable="true" layoutY="250.0" mnemonicParsing="false" onAction="#endTurn" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../btn_feluciaWithText.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets left="0.1" />
+                     </padding></Button>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="20.0" layoutY="509.3333333333333" prefHeight="165.0" prefWidth="485.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="509.0">
+               <children>
+                  <Label layoutX="110.0" layoutY="30.0" text="Other Player Info" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="160.0" prefWidth="94.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <AnchorPane fx:id="hamburgerBackground_ap" layoutX="146.0" prefHeight="43.0" prefWidth="51.0" style="-fx-background-color: gray;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <Button fx:id="hamburger_btn" mnemonicParsing="false" onAction="#burgerMenuClicked" styleClass="hamburger_btn" stylesheets="@style.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <graphic>
+                        <ImageView fx:id="hamburgerIcon_img" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../hamburgerIcon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <AnchorPane fx:id="hamburgerMenu_ap" prefHeight="113.0" prefWidth="94.0" style="-fx-background-color: grey;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                     <children>
+                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button layoutY="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save As" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                        <Button layoutY="80.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Quit" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+            <Label fx:id="moneyChange_lbl" layoutX="160.0" opacity="0.0" text="+$200" textFill="#168118" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="72.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="outerBoard_ap" layoutX="-2.0" layoutY="-4.0" prefHeight="744.0" prefWidth="725.0" style="-fx-background-color: gray;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="555.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane fx:id="innerBoard_ap" prefHeight="494.0" prefWidth="471.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="115.0">
                <children>
-                  <ImageView fitHeight="494.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ImageView fitHeight="751.0" fitWidth="742.0" layoutX="-130.66666666666666" layoutY="-132.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-125.0" AnchorPane.leftAnchor="-131.0" AnchorPane.rightAnchor="-117.0" AnchorPane.topAnchor="-132.0">
                      <image>
                         <Image url="@../../../space.jpg" />
                      </image>
@@ -120,7 +244,10 @@
             </AnchorPane>
             <AnchorPane fx:id="space4" layoutX="390.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="280.0">
                <children>
-                  <ImageView pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                     <image>
+                        <Image url="@../../../propertyImages/tradeFederationShipResized.png" />
+                     </image></ImageView>
                   <Label layoutX="4.0" layoutY="40.0" text="\$200 Tax" />
                </children></AnchorPane>
             <AnchorPane fx:id="space5" layoutX="335.0" layoutY="610.0" prefHeight="100.0" prefWidth="55.0" style="-fx-background-color: white;" styleClass="board_cell_bottom" stylesheets="@style.css" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="335.0">
@@ -471,7 +598,10 @@
             </AnchorPane>
             <AnchorPane fx:id="space38" layoutX="576.0" layoutY="537.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="500.0">
                <children>
-                  <ImageView pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fitWidth="20.0" pickOnBounds="true" preserveRatio="true" rotate="270.0" visible="false">
+                     <image>
+                        <Image url="@../../../propertyImages/imperialCreditSymbol.png" />
+                     </image></ImageView>
                   <Label layoutX="30.0" layoutY="10.0" rotate="270.0" text="\$100 Tax" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children></AnchorPane>
             <AnchorPane fx:id="space39" layoutX="586.0" layoutY="547.0" prefHeight="55.0" prefWidth="100.0" style="-fx-background-color: white;" styleClass="board_cell_right" stylesheets="@style.css" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="555.0">
@@ -485,72 +615,6 @@
                   </ImageView>
                </children>
             </AnchorPane>
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutX="742.0" layoutY="147.0" prefHeight="685.0" prefWidth="518.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="740.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
-         <children>
-            <AnchorPane layoutX="6.0" prefHeight="165.0" prefWidth="280.0" AnchorPane.bottomAnchor="375.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
-               <children>
-                  <Label layoutX="123.0" layoutY="23.0" text="Player:" />
-                  <Label fx:id="playerMoney_lbl" layoutX="126.0" layoutY="48.0" text="\$" />
-                  <Label layoutX="126.0" layoutY="106.0" text="Properties" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="21.0" layoutY="188.0" prefHeight="165.0" prefWidth="280.0" AnchorPane.bottomAnchor="180.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="205.0">
-               <children>
-                  <Label layoutX="27.0" layoutY="15.0" text="Player Rolled a:" />
-                  <Label layoutX="27.0" layoutY="43.0" text="Player Landed on:" />
-                  <Label layoutX="27.0" layoutY="67.0" text="Money Owed or Cost" />
-                  <Button fx:id="buyProperty_btn" disable="true" layoutX="25.0" layoutY="96.0" mnemonicParsing="false" text="Buy Property" />
-                  <Button layoutX="123.0" layoutY="96.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Trade" />
-                  <Button fx:id="endTurn_btn" disable="true" layoutX="196.0" layoutY="96.0" mnemonicParsing="false" onAction="#endTurn" text="End Turn" />
-                  <Button layoutX="24.0" layoutY="131.0" mnemonicParsing="false" text="Mortgage Property" />
-                  <Button fx:id="buyHousing_btn" disable="true" layoutX="158.0" layoutY="131.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="102.0" text="Buy Housing" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="20.0" layoutY="404.0" prefHeight="131.0" prefWidth="281.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="400.0">
-               <children>
-                  <Label layoutX="110.0" layoutY="30.0" text="Other Player Info" />
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="160.0" prefWidth="94.0" AnchorPane.rightAnchor="0.0">
-               <children>
-                  <AnchorPane fx:id="hamburgerBackground_ap" layoutX="146.0" prefHeight="43.0" prefWidth="51.0" style="-fx-background-color: gray;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <Button fx:id="hamburger_btn" mnemonicParsing="false" onAction="#burgerMenuClicked" styleClass="hamburger_btn" stylesheets="@style.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <graphic>
-                        <ImageView fx:id="hamburgerIcon_img" fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../../hamburgerIcon.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <AnchorPane fx:id="hamburgerMenu_ap" prefHeight="113.0" prefWidth="94.0" style="-fx-background-color: grey;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="75.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                        <Button layoutY="40.0" mnemonicParsing="false" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Save As" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                        <Button layoutY="80.0" mnemonicParsing="false" onAction="#quit" prefHeight="40.0" styleClass="hamburgerMenu_btn" stylesheets="@style.css" text="Quit" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Button>
-                     </children>
-                  </AnchorPane>
-               </children>
-            </AnchorPane>
-            <Label fx:id="moneyChange_lbl" layoutX="160.0" opacity="0.0" text="+$200" textFill="#168118" AnchorPane.topAnchor="0.0">
-               <font>
-                  <Font size="72.0" />
-               </font>
-            </Label>
          </children>
       </AnchorPane>
    </children>

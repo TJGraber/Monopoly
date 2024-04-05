@@ -32,7 +32,7 @@
     -fx-border-style: solid hidden solid solid;
 }
 
-.die_btn, .openCard_btn, .hamburger_btn, .hamburgerMenu_btn{
+.die_btn, .openCard_btn, .hamburger_btn, .hamburgerMenu_btn, .user_actions_btn{
     -fx-cursor: hand;
     -fx-background-color: none;
 }
@@ -44,4 +44,12 @@
 .hamburgerMenu_btn:hover{
     -fx-background-color: #999DA0;
     -fx-cursor: hand;
+}
+
+.user_actions_btn{
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+}
+.user_actions_btn:hover{
+    -fx-opacity: 0.9;
 }

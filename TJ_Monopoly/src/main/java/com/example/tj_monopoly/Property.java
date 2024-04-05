@@ -14,8 +14,15 @@ public class Property {
     public String getPrice(){
         return price;
     }
+    public int getPriceAsInt(){
+        return Integer.parseInt(price.substring(1));
+    }
     public boolean isOwned(){
         return isOwned;
+    }
+
+    public void setOwned(boolean _isOwned){
+        isOwned = _isOwned;
     }
     public boolean isMortgaged(){
         return isMortgaged;

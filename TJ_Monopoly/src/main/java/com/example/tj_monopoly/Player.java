@@ -77,4 +77,8 @@ public class Player {
         money -= _money;
     }
 
+    public void addProperty(Property _property){
+        properties.add(_property);
+    }
+
 }

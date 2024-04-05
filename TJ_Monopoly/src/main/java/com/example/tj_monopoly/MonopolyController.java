@@ -21,7 +21,7 @@ public class MonopolyController implements Initializable {
 
     //region FXML Compontents
     @FXML
-    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, buyHousing_btn, endTurn_btn;
+    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, endTurn_btn, mortgageProperty_btn, buyHousing_btn;
     @FXML
     ImageView firstDie_img, secondDie_img, playerPiece1, tilePreview_img, hamburgerIcon_img;
     @FXML
@@ -45,12 +45,12 @@ public class MonopolyController implements Initializable {
     };
 
     String[] tileName = {
-            "Go", "Battle Droid", "Community Chest", "General Grevious", "", "Millennium Falcon", "Captain Rex", "Chance",
+            "Go", "Battle Droid", "Community Chest", "General Grevious", "Trade Blockade", "Millennium Falcon", "Captain Rex", "Chance",
             "Ahsoka Tano", "Arc Trooper Fives", "Jail", "Stormtrooper", "Death Star", "Director Krennic", "Grand Inquisitor",
             "Slave 1", "Wedge Antilles", "Community Chest", "Cassian Andor", "Han Solo", "Free Parking", "Count Dooku",
             "Chance", "Darth Maul", "Kylo Ren", "Star Destroyer", "Plo Koon", "Anakin Skywalker", "Starkiller Base",
-            "Mace Windu", "Go To Jail", "Master Yoda", "Luke Skywalker", "Community Chest", "Obi-Wan Kenobi",
-            "AT-AT Walker", "Chance", "Emperor Palpatine", "", "Darth Vader"
+            "Mace Windu", "Go to Jail", "Master Yoda", "Luke Skywalker", "Community Chest", "Obi-Wan Kenobi",
+            "AT-AT Walker", "Chance", "Emperor Palpatine", "Hyperspace Tax", "Darth Vader"
     };
 
     Player player;
@@ -200,10 +200,19 @@ public class MonopolyController implements Initializable {
             movePreviewCardBack();
         }
 
-        stopPulsingDice();
-
         audio.setFile(2);
         audio.play();
+
+        stopPulsingDice();
+
+//        firstDie_btn.setDisable(true);
+//        secondDie_btn.setDisable(true);
+//        firstDie_btn.setOpacity(1);
+//        secondDie_btn.setOpacity(1);
+
+        //Don't let the user click on the dice while they are rolling by removing the dice actions
+        firstDie_btn.setOnAction(null);
+        secondDie_btn.setOnAction(null);
 
         player.setHasRolled(true);
 
@@ -225,18 +234,25 @@ public class MonopolyController implements Initializable {
         timeline.play();
 
         timeline.setOnFinished(event -> {
+
+            addActionsBackToDice();
+
             handleBoardAfterDiceRoll(randomIndexD1 + 1, randomIndexD2 + 1);
         });
     }
+    public void addActionsBackToDice(){
+        firstDie_btn.setOnAction(event -> rollDice());
+
+        secondDie_btn.setOnAction(event -> rollDice());
+    }
+
     public void handleBoardAfterDiceRoll(int die1Num, int die2Num){
 
         int numberOfSpaces = die1Num + die2Num;
-
-        numberOfSpaces = 2;
+        //numberOfSpaces = 38;
 
         //Rolled doubles
         boolean rolledDoubles = die1Num == die2Num;
-        rolledDoubles = true;
 
         if(rolledDoubles){
             player.setHasRolled(false);
@@ -381,27 +397,50 @@ public class MonopolyController implements Initializable {
 
             endTurn_btn.setDisable(true);
         }else{
+
             endTurn_btn.setDisable(false);
         }
 
-        //Disable dice buttons if player has already rolled
+        //Checking for Doubles -> if they haven't rolled and the dice are not already disabled
+        if(!player.hasRolled() && !firstDie_btn.isDisabled()){
+            pulseDice();
+        }
+
+        //Disable dice buttons if player has already rolled or if there is a card to be opened first
         if(player.hasRolled() || cardNeedsToBeOpened){
             firstDie_btn.setDisable(true);
             secondDie_btn.setDisable(true);
+
+            stopPulsingDice();
         }else{
             firstDie_btn.setDisable(false);
             secondDie_btn.setDisable(false);
+
+            //pulseDice();
         }
 
         //check to see if player is in jail
 
-        //Disable buy button if tile can not be bought
-        buyProperty_btn.setDisable(!tileCanBePurchased());
+
+        //Disable buy button if tile can not be bought or player doesn't have enough money
+        if(tileCanBePurchased()){
+
+            if(tiles[newTileIndex].getProperty().getPriceAsInt() <= player.getMoney()){
+                buyProperty_btn.setDisable(false);
+            }else{
+                buyProperty_btn.setDisable(true);
+            }
+        }else{
+            buyProperty_btn.setDisable(true);
+        }
+
+        //buyProperty_btn.setDisable(!tileCanBePurchased());
 
         //Disable buy housing button if player has no monopolies
         buyHousing_btn.setDisable(player.getMonopolies().isEmpty());
 
-
+        //Disable mortgage property button if the user has no properties
+        mortgageProperty_btn.setDisable(player.getProperties().isEmpty());
     }
 
     public boolean tileCanBePurchased(){
@@ -554,19 +593,24 @@ public class MonopolyController implements Initializable {
 
     //region User Actions
     public void buyProperty(){
-        System.out.println("testing");
+        Property property = tiles[newTileIndex].getProperty();
+
+        lostMoney(property.getPriceAsInt());
+
+        property.setOwned(true);
+        player.addProperty(property);
     }
 
     public void endTurn(){
         player.setHasRolled(false);
 
-//        buyProperty_btn.setDisable(true);
-//        endTurn_btn.setDisable(true);
-
         pulseDice();
         movePreviewCardBack();
 
         setAllowedUserActions();
+
+        //Players should not be able to change their mind and buy a property after passing on it the turn prior
+        buyProperty_btn.setDisable(true);
     }
     //endregion
 
