@@ -5,13 +5,11 @@ import javafx.scene.layout.AnchorPane;
 
 public class Tile {
 
-    String name;
-    Property property;
-    boolean isProperty;
-    AnchorPane anchor;
-    Image img;
-    boolean isCornerTile;
-    boolean isChanceOrChest;
+    private String name;
+    private Property property;
+    private boolean isProperty, isCornerTile, isChanceOrChest;
+    private AnchorPane anchor;
+    private Image img;
 
     public Tile(String _name, Property _property, boolean _isProperty, AnchorPane _anchor, Image _img, boolean _isCornerTile, boolean _isChanceOrChest){
         name = _name;

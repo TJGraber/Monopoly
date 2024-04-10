@@ -1,12 +1,17 @@
 package com.example.tj_monopoly;
 
 import javafx.animation.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -19,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class MonopolyController implements Initializable {
 
-    //region FXML Compontents
+    //region FXML Components
     @FXML
     Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, endTurn_btn, mortgageProperty_btn, buyHousing_btn;
     @FXML
@@ -32,7 +37,13 @@ public class MonopolyController implements Initializable {
     @FXML
     AnchorPane outerBoard_ap, innerBoard_ap, tilePreviewColor_ap, tilePreviewCard_ap, hamburgerMenu_ap, hamburgerBackground_ap;
     @FXML
-    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyChange_lbl, playerMoney_lbl;
+    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyChange_lbl, playerMoney_lbl, landedOn_lbl, ownedBy_lbl, moneyMagnitude_lbl, player_lbl;
+    @FXML
+    TableView<Property> playerProperties_tv;
+    @FXML
+    TableColumn<Property, String> property_tc, mortgageValue_tc, mortgaged_tc, hotel_tc;
+    @FXML
+    TableColumn<Property, Integer> houses_tc;
     //endregion
 
     Image[] diceImages = {
@@ -44,17 +55,16 @@ public class MonopolyController implements Initializable {
             new Image("dSixFixed.png")
     };
 
-    String[] tileName = {
+    String[] tileNames = {
             "Go", "Battle Droid", "Community Chest", "General Grevious", "Trade Blockade", "Millennium Falcon", "Captain Rex", "Chance",
             "Ahsoka Tano", "Arc Trooper Fives", "Jail", "Stormtrooper", "Death Star", "Director Krennic", "Grand Inquisitor",
             "Slave 1", "Wedge Antilles", "Community Chest", "Cassian Andor", "Han Solo", "Free Parking", "Count Dooku",
             "Chance", "Darth Maul", "Kylo Ren", "Star Destroyer", "Plo Koon", "Anakin Skywalker", "Starkiller Base",
-            "Mace Windu", "Go to Jail", "Master Yoda", "Luke Skywalker", "Community Chest", "Obi-Wan Kenobi",
+            "Mace Windu", "Go To Jail", "Master Yoda", "Luke Skywalker", "Community Chest", "Obi-Wan Kenobi",
             "AT-AT Walker", "Chance", "Emperor Palpatine", "Hyperspace Tax", "Darth Vader"
     };
 
-    Player player;
-    Audio audio = new Audio();
+
 
     //region Animation Variables
     ScaleTransition die1PulseTransition;
@@ -62,12 +72,21 @@ public class MonopolyController implements Initializable {
     ScaleTransition pulseCardTransition;
     //endregion
 
+    Player player;
+    Audio audio = new Audio();
     AnchorPane[] spaces;
     Tile[] tiles = new Tile[40];
+    Property[][] monopolies = new Property[8][];
+    String currentColor = "";
+    int monopolyRowCounter = 0;
+    int monopolyColCounter = 0;
     boolean isPreviewCardCentered = false;
     boolean cardNeedsToBeOpened = false;
+    boolean rolledDoubles = false;
+    int doublesInARow;
     int startingMoney = 1500;
     int newTileIndex;
+    Tile currentTile;
     final Color MONEYGREEN = Color.rgb(22, 129, 24);
     final Color NEGATIVERED = Color.rgb(255,51,51);
 
@@ -85,7 +104,7 @@ public class MonopolyController implements Initializable {
 
     //region Setup
     public void setUpPlayers(){
-        player = new Player(0, playerPiece1, startingMoney, false, false);
+        player = new Player("Player 1", 0, playerPiece1, startingMoney, false, false);
     }
     public void setUpSpaces(){
         spaces = new AnchorPane[]{space0, space1, space2, space3, space4, space5, space6, space7, space8, space9, space10, space11,
@@ -100,50 +119,106 @@ public class MonopolyController implements Initializable {
 
         for(int i = 0; i < spaces.length; i++){
 
-            boolean isCorner = false;
-
-            if(i % 10 == 0){
-                isCorner = true;
-            }
-
-
+            String color = "";
+            boolean isCorner = (i % 10 == 0);
             Property property = null;
             boolean isProperty = false;
-            ImageView imgV = null;
-            Image img = null;
-            boolean isChanceOrChest = false;
+            boolean isChanceOrChest;
+            Image tileImg;
 
-            if(spaces[i].getChildren().size() == 3 /* probably or 2 in the future for utilities with no color anchor*/){
+            if(spaces[i].getChildren().size() == 3){
 
-                imgV = (ImageView) spaces[i].getChildren().get(2);
-                img = imgV.getImage();
+                color = getPropertyColor(i);
+                tileImg = getTileImage(i, 2);
 
                 Label priceLbl = (Label) spaces[i].getChildren().get(1);
-                property = new Property(priceLbl.getText(), false, false);
+                property = new Property(tileNames[i], color, priceLbl.getText(), null, false, false, 0, false);
                 isProperty = true;
+
+                boolean isStation = isStation(i);
+                boolean isVehicle = isVehicle(i, isCorner);
+
+                if(!isStation && !isVehicle){
+                    setUpMonopolies(property);
+                }
+
             }else{
 
-                imgV = (ImageView) spaces[i].getChildren().get(0);
-                img = imgV.getImage();
-
-                if(img == null){
-                    img = new Image("vaderIcon.png");
-                }
+                tileImg = getTileImage(i, 0);
             }
 
-            File file = new File(img.getUrl());
+            File file = new File(tileImg.getUrl());
             String fName = file.getName();
 
-            if(fName.equals("empireLogo.png") || fName.equals("rebellionLogo.png")){
-                isChanceOrChest = true;
-            }
+            isChanceOrChest = isChanceOrChest(fName);
 
-            tiles[i] = new Tile(tileName[i], property, isProperty, spaces[i], img, isCorner, isChanceOrChest);
+            tiles[i] = new Tile(tileNames[i], property, isProperty, spaces[i], tileImg, isCorner, isChanceOrChest);
         }
 
+        printMonopolies();
+    }
+    public String getPropertyColor(int _index){
+        //String colorStyle = ": white;";
+
+        String colorStyle = spaces[_index].getChildren().get(0).getStyle();
+
+        if(colorStyle.isEmpty()){
+            colorStyle = ": gray;";
+        }
+
+        int delimiterIndex = colorStyle.indexOf(":");
+        String isolatedColor = colorStyle.substring(delimiterIndex + 2,  colorStyle.length() - 1);
+
+        return isolatedColor;
+    }
+    private boolean isChanceOrChest(String _fileName){
+        return _fileName.equals("empireLogo.png") || _fileName.equals("rebellionLogo.png");
+    }
+    private Image getTileImage(int _index, int _childIndex){
+        ImageView imgV = (ImageView) spaces[_index].getChildren().get(_childIndex);
+        return imgV.getImage();
+    }
+    private boolean isStation(int _index){
+        //12 and 28 are locations of the 2 stations
+        return _index == 12 || _index == 28;
+    }
+    private boolean isVehicle(int _index, boolean _isCorner){
+        //Is multiple of 5 but not multiple of 10 (not a corner)
+        return _index % 5 == 0 && !_isCorner;
+    }
+    private void setUpMonopolies(Property _property){
+
+        //jaggedArray = [4][]
+        //[0] = new array[2]
+        //[1] = new array[3]
+        //[2] = new array[2]
+        //[3] = new array[3]
+
+        String newColor = _property.getColor();
+
+
+        if(!currentColor.equals(newColor)){
+            monopolyRowCounter++;
+            monopolyColCounter = 0;
+        }
+
+        monopolies[monopolyRowCounter][monopolyColCounter] = _property;
+        System.out.println(currentColor);
+
+        monopolyColCounter++;
+        currentColor = newColor;
+    }
+    public void printMonopolies(){
+        for(int row = 0; row < monopolies.length; row++){
+            for(int col = 0; col < monopolies[row].length; col++){
+                System.out.println(monopolies[row][col].getColor());
+            }
+        }
     }
     public void setUpLabels(){
+        playerProperties_tv.setPlaceholder(new Label("No Properties Owned"));
         playerMoney_lbl.setText("$" + player.getMoney());
+        player_lbl.setText(player.getPlayerName());
     }
     //endregion
 
@@ -174,7 +249,6 @@ public class MonopolyController implements Initializable {
         die2PulseTransition.stop();
     }
     public void pulseCard(){
-
         cardNeedsToBeOpened = true;
 
         pulseCardTransition = new ScaleTransition(Duration.seconds(0.5), tilePreviewCard_ap);
@@ -186,8 +260,8 @@ public class MonopolyController implements Initializable {
     }
 
     public void stopPulsingCard(){
-        openCard_btn.setScaleX(1);
-        openCard_btn.setScaleY(1);
+        tilePreviewCard_ap.setScaleX(1);
+        tilePreviewCard_ap.setScaleY(1);
 
         pulseCardTransition.stop();
     }
@@ -196,37 +270,21 @@ public class MonopolyController implements Initializable {
     //region Dice Clicked (All happens without user input after dice are clicked)
     public void rollDice(){
 
-        if(isPreviewCardCentered){
-            movePreviewCardBack();
-        }
-
         audio.setFile(2);
         audio.play();
 
         stopPulsingDice();
+        removeActionsFromDice();
 
-//        firstDie_btn.setDisable(true);
-//        secondDie_btn.setDisable(true);
-//        firstDie_btn.setOpacity(1);
-//        secondDie_btn.setOpacity(1);
-
-        //Don't let the user click on the dice while they are rolling by removing the dice actions
-        firstDie_btn.setOnAction(null);
-        secondDie_btn.setOnAction(null);
+        if(isPreviewCardCentered){
+            movePreviewCardBack();
+        }
 
         player.setHasRolled(true);
 
-        movePreviewCardBack();
-
         //Dice will flicker every 0.1 seconds
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.1), event ->{
-
-            Random random = new Random();
-            randomIndexD1 = random.nextInt(6);
-            randomIndexD2 = random.nextInt(6);
-
-            firstDie_img.setImage(diceImages[randomIndexD1]);
-            secondDie_img.setImage(diceImages[randomIndexD2]);
+            flickerDice();
         }));
 
         //25 Total "bounces"
@@ -235,34 +293,59 @@ public class MonopolyController implements Initializable {
 
         timeline.setOnFinished(event -> {
 
-            addActionsBackToDice();
+            addActionsToDice();
 
             handleBoardAfterDiceRoll(randomIndexD1 + 1, randomIndexD2 + 1);
         });
     }
-    public void addActionsBackToDice(){
+    public void removeActionsFromDice(){
+        //Don't let the user click on the dice while they are rolling by removing the dice actions
+        firstDie_btn.setOnAction(null);
+        secondDie_btn.setOnAction(null);
+    }
+    public void addActionsToDice(){
         firstDie_btn.setOnAction(event -> rollDice());
-
         secondDie_btn.setOnAction(event -> rollDice());
+    }
+    private void flickerDice(){
+        Random random = new Random();
+        randomIndexD1 = random.nextInt(6);
+        randomIndexD2 = random.nextInt(6);
+
+        firstDie_img.setImage(diceImages[randomIndexD1]);
+        secondDie_img.setImage(diceImages[randomIndexD2]);
     }
 
     public void handleBoardAfterDiceRoll(int die1Num, int die2Num){
 
+//        die1Num = 1;
+//        die2Num = 1;
+
         int numberOfSpaces = die1Num + die2Num;
         //numberOfSpaces = 38;
 
-        //Rolled doubles
-        boolean rolledDoubles = die1Num == die2Num;
+        //region Rolled doubles
+        rolledDoubles = die1Num == die2Num;
 
         if(rolledDoubles){
             player.setHasRolled(false);
+            doublesInARow++;
+        }else{
+            doublesInARow = 0;
         }
+        if(doublesInARow >= 3){
+            //goToJail();
+
+            //numberOfSpaces = Math.abs(10 - player.getCurrentTileIndex());
+        }
+        //endregion
         
         int tileBeforeMove = player.getCurrentTileIndex();
 
         //Checking to see if new tile will be going back to start of list (going to or past go)
         newTileIndex = (tileBeforeMove + numberOfSpaces) % tiles.length;
-        player.setCurrentTile(newTileIndex);
+        player.setCurrentTileIndex(newTileIndex);
+        currentTile = tiles[newTileIndex];
 
         //Dividing by 10 to get first digit, getting the board side (since it's an int if number is less than 10
         // boardSide will equal 0)
@@ -271,16 +354,18 @@ public class MonopolyController implements Initializable {
 
         int numberOfSidesJumpedTo = getNumSidesJumped(boardSideBeforeMoving, boardSideAfterMoving);
 
-        setUpTilePreview(newTileIndex);
+        setUpTilePreview();
 
-        rotateBoard(numberOfSidesJumpedTo);
+        //rotateBoardAfterMove(numberOfSidesJumpedTo);
 
         movePlayerPiece(boardSideAfterMoving);
 
         handlePassedGo(tileBeforeMove);
+
+        updateSideUILabels();
     }
 
-    public int getNumSidesJumped(int _boardSideBeforeMoving, int _boardSideAfterMoving){
+    private int getNumSidesJumped(int _boardSideBeforeMoving, int _boardSideAfterMoving){
 
         //If Player goes from side 0 (bottom) to side 2 (top) then number of sides jumped = 2
         int numberOfSidesJumpedTo = Math.abs(_boardSideAfterMoving - _boardSideBeforeMoving);
@@ -301,26 +386,23 @@ public class MonopolyController implements Initializable {
         return numberOfSidesJumpedTo;
     }
 
-    public void rotateBoard(int _numberOfSidesJumpedTo){
+    public void rotateBoardAfterMove(int _numberOfSidesJumpedTo){
 
         int addedRotation = _numberOfSidesJumpedTo * -90;
 
         if(_numberOfSidesJumpedTo > 0){
-            RotateTransition outerRotation = new RotateTransition(Duration.millis(2000 * _numberOfSidesJumpedTo), outerBoard_ap);
-            //Board will rotate by -90 degrees for each side jumped to, using cycle count so that animation will
-            //play at the same speed no matter the number of jumps
-            outerRotation.setByAngle(addedRotation);
-            //rt.setCycleCount(numberOfSidesJumpedTo);
-            outerRotation.play();
 
-            RotateTransition innerRotation = new RotateTransition(Duration.millis(2000 * _numberOfSidesJumpedTo), innerBoard_ap);
-            innerRotation.setByAngle(-addedRotation);
-            innerRotation.play();
+            Duration duration = Duration.millis(2000);
 
-            RotateTransition playerRotation = new RotateTransition(Duration.millis(2000 * _numberOfSidesJumpedTo), playerPiece1);
-            playerRotation.setByAngle(-addedRotation);
-            playerRotation.play();
+            nodeRotateTransition(outerBoard_ap, duration, addedRotation);
+            nodeRotateTransition(innerBoard_ap, duration, -addedRotation);
+            nodeRotateTransition(playerPiece1, duration, -addedRotation);
         }
+    }
+    public void nodeRotateTransition(Node _node, Duration _duration, int _addedRotation){
+        RotateTransition rotation = new RotateTransition(_duration, _node);
+        rotation.setByAngle(_addedRotation);
+        rotation.play();
     }
 
     public void movePlayerPiece(int _boardSideAfterMoving){
@@ -334,7 +416,7 @@ public class MonopolyController implements Initializable {
         player.getPlayerIcon().setLayoutX(25);
         player.getPlayerIcon().setLayoutY(25);
 
-        if(!tiles[newTileIndex].isCornerTile()){
+        if(!currentTile.isCornerTile()){
 
             //If new tile is not a corner tile, offset is necessary based on which side of the board
             //the new tile is on. By default, player location is set to corner offset
@@ -348,18 +430,17 @@ public class MonopolyController implements Initializable {
 
     //region Tile Landed On Actions
     public void handlePassedGo(int _tileBeforeMove){
-
-        if(_tileBeforeMove > newTileIndex){
+        if(_tileBeforeMove > newTileIndex && !player.isInJail()){
             gainedMoney(200);
         }
     }
     public void handleNecessaryTileActions(){
 
-        Tile tile = tiles[newTileIndex];
+        if(currentTile.isProperty()) {
+            int rentOwed = calculateRent();
 
-        if(tile.isProperty) {
-            if (tile.getProperty().isOwned() && !tile.getProperty().isMortgaged()) {
-                //is property owned && not mortgaged -> subtract rent
+            if(rentOwed > 0){
+                lostMoney(rentOwed);
             }
         }
 
@@ -380,6 +461,7 @@ public class MonopolyController implements Initializable {
                 break;
             case 30:
                 //Go to Jail
+                //goToJail();
 
                 break;
             case 38:
@@ -389,7 +471,54 @@ public class MonopolyController implements Initializable {
                 break;
         }
     }
+    private int calculateRent(){
+        int rentDue = 0;
+        Property property = currentTile.getProperty();
 
+        //is property owned && not mortgaged -> subtract rent
+        if (property.isOwned() && !property.isMortgaged()) {
+
+            rentDue = property.getPriceAsInt() / 10;
+
+            if(property.getNumberHouses() >= 1){
+                rentDue *= 4;
+            }
+            if(property.getNumberHouses() >= 2){
+                rentDue *= 3;
+            }
+            if(property.getNumberHouses() >= 3){
+
+                if(rentDue <= 250){
+                    rentDue *= 3;
+                }else{
+                    rentDue *= 2 + 150;
+                }
+
+            }
+            if(property.getNumberHouses() == 4){
+                rentDue += 150;
+            }
+
+            if(property.hasHotel()){
+                rentDue = property.getPriceAsInt() * 5;
+            }
+
+            //Check to see if current player owns property
+            if(property.getOwner().equals(player)){
+                rentDue = -1;
+            }
+        }
+
+        return rentDue;
+    }
+    public void goToJail(){
+        player.setInJail(true);
+        //player.setCurrentTileIndex(10);
+
+        //spaces[10].getChildren().add(player.getPlayerIcon());
+
+        //setAllowedUserActions();
+    }
     public void setAllowedUserActions(){
 
         //Disable End turn button if user has not rolled or if they have a card to open
@@ -401,8 +530,8 @@ public class MonopolyController implements Initializable {
             endTurn_btn.setDisable(false);
         }
 
-        //Checking for Doubles -> if they haven't rolled and the dice are not already disabled
-        if(!player.hasRolled() && !firstDie_btn.isDisabled()){
+        //Checking for Doubles
+        if(rolledDoubles){
             pulseDice();
         }
 
@@ -415,17 +544,12 @@ public class MonopolyController implements Initializable {
         }else{
             firstDie_btn.setDisable(false);
             secondDie_btn.setDisable(false);
-
-            //pulseDice();
         }
-
-        //check to see if player is in jail
-
 
         //Disable buy button if tile can not be bought or player doesn't have enough money
         if(tileCanBePurchased()){
 
-            if(tiles[newTileIndex].getProperty().getPriceAsInt() <= player.getMoney()){
+            if(currentTile.getProperty().getPriceAsInt() <= player.getMoney()){
                 buyProperty_btn.setDisable(false);
             }else{
                 buyProperty_btn.setDisable(true);
@@ -434,7 +558,10 @@ public class MonopolyController implements Initializable {
             buyProperty_btn.setDisable(true);
         }
 
-        //buyProperty_btn.setDisable(!tileCanBePurchased());
+        //Check to see if player is in jail
+        if(player.isInJail()){
+
+        }
 
         //Disable buy housing button if player has no monopolies
         buyHousing_btn.setDisable(player.getMonopolies().isEmpty());
@@ -443,12 +570,12 @@ public class MonopolyController implements Initializable {
         mortgageProperty_btn.setDisable(player.getProperties().isEmpty());
     }
 
-    public boolean tileCanBePurchased(){
+    private boolean tileCanBePurchased(){
 
-        if(tiles[newTileIndex].isProperty()){
+        if(currentTile.isProperty()){
 
             //If the tile is a property and not owned, return true because it can be purchased
-            return !tiles[newTileIndex].getProperty().isOwned();
+            return !currentTile.getProperty().isOwned();
         }
 
         return false;
@@ -456,12 +583,13 @@ public class MonopolyController implements Initializable {
     //endregion
 
     //region Tile Preview
-    public void setUpTilePreview(int _newTileIndex){
+    public void setUpTilePreview(){
 
-        boolean isProperty = tiles[_newTileIndex].isProperty();
+        Tile newTile = currentTile;
+        boolean isProperty = newTile.isProperty();
 
         //region Preview Image
-        Image img = tiles[_newTileIndex].getImg();
+        Image img = newTile.getImg();
         tilePreview_img.setImage(img);
         tilePreview_img.setLayoutX(getImageOffset(img));
         //endregion
@@ -470,7 +598,7 @@ public class MonopolyController implements Initializable {
         String colorStyle = ": white;";
 
         if(isProperty){
-            colorStyle = spaces[_newTileIndex].getChildren().get(0).getStyle();
+            colorStyle = spaces[newTileIndex].getChildren().get(0).getStyle();
 
             if(colorStyle.isEmpty()){
                 colorStyle = ": white;";
@@ -479,7 +607,7 @@ public class MonopolyController implements Initializable {
 
         tilePreviewColor_ap.setStyle(colorStyle);
 
-        tilePreviewName_lbl.setText(tiles[_newTileIndex].getName());
+        tilePreviewName_lbl.setText(newTile.getName());
 
         int delimiterIndex = colorStyle.indexOf(":");
         String isolatedColor = colorStyle.substring(delimiterIndex + 2,  colorStyle.length() - 1);
@@ -492,25 +620,25 @@ public class MonopolyController implements Initializable {
 
 
         if(isProperty){
-            tilePreviewPrice_lbl.setText(tiles[_newTileIndex].getProperty().getPrice());
+            tilePreviewPrice_lbl.setText(newTile.getProperty().getPriceAsString());
         }else{
             tilePreviewPrice_lbl.setText("");
         }
         //endregion
 
-        if(tiles[_newTileIndex].isChanceOrChest){
+        if(newTile.isChanceOrChest()){
             pulseCard();
             openCard_btn.setVisible(true);
         }
 
-        if(tiles[_newTileIndex].isCornerTile){
+        if(newTile.isCornerTile()){
             tilePreviewCard_ap.setStyle("-fx-background-color:  #c7eaca;");
         }else{
             tilePreviewCard_ap.setStyle("-fx-background-color:  white;");
         }
     }
 
-    public int getImageOffset(Image _img){
+    private int getImageOffset(Image _img){
 
         double aspectRatio = _img.getWidth() / _img.getHeight();
         int imageOffset = 0;
@@ -544,6 +672,7 @@ public class MonopolyController implements Initializable {
     //region Community Chest and Chance Cards
     public void openCardAnimate(){
         stopPulsingCard();
+        openCard_btn.setVisible(false);
 
         TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(1.5), tilePreviewCard_ap);
         translateTransition.setToX(100);
@@ -573,7 +702,6 @@ public class MonopolyController implements Initializable {
 
     public void openCard(){
         tilePreview_img.setImage(new Image("jarJar.png"));
-        openCard_btn.setVisible(false);
 
         isPreviewCardCentered = true;
         cardNeedsToBeOpened = false;
@@ -593,12 +721,33 @@ public class MonopolyController implements Initializable {
 
     //region User Actions
     public void buyProperty(){
-        Property property = tiles[newTileIndex].getProperty();
+
+        Property property = currentTile.getProperty();
 
         lostMoney(property.getPriceAsInt());
 
         property.setOwned(true);
+        property.setOwner(player);
         player.addProperty(property);
+        buyProperty_btn.setDisable(true);
+
+        updateSideUILabels();
+        addPropertyToPropertyTable();
+
+    }
+
+    public void addPropertyToPropertyTable(){
+        ObservableList<Property> observableProperties = FXCollections.observableArrayList();
+
+        observableProperties.addAll(player.getProperties());
+
+        property_tc.setCellValueFactory(new PropertyValueFactory<>("name"));
+        mortgageValue_tc.setCellValueFactory(new PropertyValueFactory<>("mortgageValue"));
+        mortgaged_tc.setCellValueFactory(new PropertyValueFactory<>("isMortgagedString"));
+        houses_tc.setCellValueFactory(new PropertyValueFactory<>("numberHouses"));
+        hotel_tc.setCellValueFactory(new PropertyValueFactory<>("hasHotelString"));
+
+        playerProperties_tv.setItems(observableProperties);
     }
 
     public void endTurn(){
@@ -616,11 +765,17 @@ public class MonopolyController implements Initializable {
 
     //region Money Animations
     public void gainedMoney(int _moneyGained){
+        audio.setFile(6);
+        audio.play();
+
         player.addMoney(_moneyGained);
         moneyGainedAnimation(_moneyGained);
         playerMoney_lbl.setText("$" + player.getMoney());
     }
     public void lostMoney(int _moneyLost){
+        audio.setFile(6);
+        audio.play();
+
         player.subtractMoney(_moneyLost);
         moneyLostAnimation(_moneyLost);
         playerMoney_lbl.setText("$" + player.getMoney());
@@ -666,19 +821,78 @@ public class MonopolyController implements Initializable {
     }
     //endregion
 
-
     //region User Interface (Things on the right side of screen)
+    public void setUpBurgerMenuClickOff(){
+        Scene scene = hamburger_btn.getScene();
+
+        scene.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent ->{
+
+            if(!mouseEvent.getPickResult().getIntersectedNode().equals(hamburger_btn)){
+                closeBurgerMenuClickOff();
+            }
+        });
+    }
     public void burgerMenuClicked(){
         hamburgerMenu_ap.setVisible(!hamburgerMenu_ap.isVisible());
         hamburgerBackground_ap.setVisible(hamburgerMenu_ap.isVisible());
 
-        //Try and figure out how to detect when a player clicks anywhere not on the menu
-        //I might be able to do this by adding an event listener to the scene
-        //When the user clicks off of the menu, it should close
+    }
+    public void closeBurgerMenuClickOff(){
+        hamburgerMenu_ap.setVisible(false);
+        hamburgerBackground_ap.setVisible(false);
 
-//        hamburger_btn.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-//            System.out.println(mouseEvent.getPickResult().getIntersectedNode());
-//        });
+    }
+
+    public void updateSideUILabels(){
+
+        //Player label
+        player_lbl.setText(player.getPlayerName());
+
+        //Landed on label
+        landedOn_lbl.setText("Player Landed On: " + tileNames[newTileIndex]);
+
+        //Owned by label
+        if(currentTile.isProperty()){
+
+            if(currentTile.getProperty().isOwned()){
+                ownedBy_lbl.setText("Owned By: " + currentTile.getProperty().getOwner().getPlayerName());
+            }else{
+                ownedBy_lbl.setText("Owned By: Nobody");
+            }
+
+        }else{
+            ownedBy_lbl.setText("Owned By: N/A");
+        }
+
+        //Money owed/cost label
+        if(currentTile.isProperty()){
+
+            if(currentTile.getProperty().isOwned()){
+                int rentOwed = calculateRent();
+
+                //calculateRent returns -1 if current player owns property and 0 if it is mortgaged
+                if(rentOwed == -1){
+                    moneyMagnitude_lbl.setText("Welcome Home!");
+                }else{
+
+                    moneyMagnitude_lbl.setText("Rent Owed: $" + rentOwed);
+                }
+
+            }else{
+                moneyMagnitude_lbl.setText("Price: " + currentTile.getProperty().getPriceAsString());
+            }
+
+        }else{
+            moneyMagnitude_lbl.setText("Price: N/A");
+        }
+
+        //Check for taxes
+        if(newTileIndex == 4){
+            moneyMagnitude_lbl.setText("Taxes Owed: $200");
+        }else if(newTileIndex == 38){
+            moneyMagnitude_lbl.setText("Taxes Owed: $100");
+        }
+
     }
 
     public void quit(){

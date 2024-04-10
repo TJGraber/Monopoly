@@ -6,16 +6,17 @@ import java.util.ArrayList;
 
 public class Player {
 
-
-    int currentTileIndex, money;
-    ImageView playerIcon;
-    boolean inJail, hasRolled;
+    private String playerName;
+    private int currentTileIndex, money;
+    private ImageView playerIcon;
+    private boolean inJail, hasRolled;
 
     ArrayList<Property> properties = new ArrayList<>();
     ArrayList<Property> monopolies = new ArrayList<>();
 
-    public Player(int _currentTile, ImageView _playerIcon, int _money, boolean _inJail, boolean _hasRolled){
+    public Player(String _playerName, int _currentTile, ImageView _playerIcon, int _money, boolean _inJail, boolean _hasRolled){
 
+        playerName = _playerName;
         currentTileIndex = _currentTile;
         playerIcon = _playerIcon;
         money = _money;
@@ -24,11 +25,19 @@ public class Player {
     }
 
     //region Getters & Setters
+    public String getPlayerName(){
+        return playerName;
+    }
+
+    public void setPlayerName(String _playerName){
+        playerName = _playerName;
+    }
+
     public int getCurrentTileIndex(){
         return currentTileIndex;
     }
 
-    public void setCurrentTile(int _currentTileIndex){
+    public void setCurrentTileIndex(int _currentTileIndex){
         currentTileIndex = _currentTileIndex;
     }
 

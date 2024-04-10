@@ -1,3 +1,8 @@
+/*
+TJ Graber
+Monopoly DDM
+*/
+
 package com.example.tj_monopoly;
 
 import javafx.application.Application;

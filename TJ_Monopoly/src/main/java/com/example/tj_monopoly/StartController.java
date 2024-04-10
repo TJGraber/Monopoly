@@ -3,6 +3,7 @@ package com.example.tj_monopoly;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -23,6 +24,7 @@ public class StartController implements Initializable {
 
     Audio themeAudio = new Audio();
     Audio traverseMenuAudio = new Audio();
+    Audio switchSceneAudio = new Audio();
 
 
     @Override
@@ -31,8 +33,8 @@ public class StartController implements Initializable {
         newGame_btn.setOnAction(actionEvent -> {
             try {
 
-                traverseMenuAudio.setFile(1);
-                traverseMenuAudio.play();
+                switchSceneAudio.setFile(1);
+                switchSceneAudio.play();
 
                 themeAudio.stop();
 
@@ -42,35 +44,35 @@ public class StartController implements Initializable {
             }
         });
 
-        newGame_btn.focusedProperty().addListener((ov, old_val, new_val) -> {
-            if (new_val) {
-                playMenuSound();
-                background_img.setFocusTraversable(false);
-            }
-        });
+        addFocusedListenerToMenuItems();
 
-        loadGame_btn.focusedProperty().addListener((ov, old_val, new_val) -> {
-            if (new_val) {
-                playMenuSound();
-            }
-        });
+        playStartingTheme();
+        playStartingAnimation();
+    }
 
-        options_btn.focusedProperty().addListener((ov, old_val, new_val) -> {
+    public void addFocusedListenerToMenuItems(){
+        addFocusedListenerToNode(newGame_btn);
+        addFocusedListenerToNode(loadGame_btn);
+        addFocusedListenerToNode(options_btn);
+        addFocusedListenerToNode(quitGame_btn);
+    }
+
+    public void addFocusedListenerToNode(Button _btn){
+        _btn.focusedProperty().addListener((ov, old_val, new_val) -> {
             if(new_val){
                 playMenuSound();
+
+                if(_btn.equals(newGame_btn)){
+                    background_img.setFocusTraversable(false);
+                }
             }
         });
+    }
 
-        quitGame_btn.focusedProperty().addListener((ov, old_val, new_val) -> {
-            if(new_val){
-                playMenuSound();
-            }
-        });
-
+    public void playStartingTheme(){
         themeAudio.setFile(3);
         themeAudio.play();
         themeAudio.loop();
-        playStartingAnimation();
     }
 
     public void playStartingAnimation(){
@@ -83,7 +85,6 @@ public class StartController implements Initializable {
         traverseMenuAudio.setFile(0);
         traverseMenuAudio.play();
     }
-
 
     public void exit(){
         System.exit(0);

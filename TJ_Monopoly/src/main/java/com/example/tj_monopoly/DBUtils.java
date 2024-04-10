@@ -12,9 +12,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class DBUtils {
 
@@ -53,6 +51,7 @@ public class DBUtils {
             movieTicketController.setUpSpaces();
             movieTicketController.setUpTiles();
             movieTicketController.setUpLabels();
+            movieTicketController.setUpBurgerMenuClickOff();
             //movieTicketController.passObjectsToScene(stage, _admin, _movieList, _transactionList);
         }
 
