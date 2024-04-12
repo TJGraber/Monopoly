@@ -17,14 +17,14 @@
             <Image url="@../../../tatooineBackground.jpg" />
          </image>
       </ImageView>
-      <AnchorPane layoutX="737.3333333333334" layoutY="13.333333333333334" prefHeight="697.0" prefWidth="528.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="740.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="13.0">
+      <AnchorPane layoutX="726.0" layoutY="13.333333333333334" prefHeight="697.0" prefWidth="541.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="740.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="13.0">
          <children>
             <AnchorPane layoutX="6.0" prefHeight="214.0" prefWidth="485.0" AnchorPane.bottomAnchor="480.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Label fx:id="player_lbl" layoutX="14.0" layoutY="14.0" text="Player:" />
                   <Label fx:id="playerMoney_lbl" layoutX="123.0" layoutY="14.0" text="\$" />
                   <Label layoutX="-13.0" layoutY="112.0" rotate="270.0" text="Properties" AnchorPane.leftAnchor="-13.0" />
-                  <TableView fx:id="playerProperties_tv" layoutX="28.0" layoutY="50.0" prefHeight="147.0" prefWidth="445.0" AnchorPane.leftAnchor="28.0">
+                  <TableView fx:id="playerProperties_tv" focusTraversable="false" layoutX="28.0" layoutY="50.0" prefHeight="147.0" prefWidth="445.0" AnchorPane.leftAnchor="28.0">
                     <columns>
                       <TableColumn fx:id="property_tc" prefWidth="140.0" text="Property" />
                       <TableColumn fx:id="mortgageValue_tc" text="Mortgage" />
@@ -38,7 +38,7 @@
                   </TableView>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="21.0" layoutY="188.0" prefHeight="321.0" prefWidth="485.0" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="205.0">
+            <AnchorPane layoutX="21.0" layoutY="188.0" prefHeight="323.0" prefWidth="521.0" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="205.0">
                <children>
                   <AnchorPane layoutX="9.0" layoutY="50.0" prefHeight="250.0" prefWidth="462.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="12.0" />
                   <Label fx:id="landedOn_lbl" layoutX="14.0" layoutY="5.0" prefHeight="41.0" prefWidth="122.0" text="Player Landed on: N/A" wrapText="true" />
@@ -77,7 +77,7 @@
                      <padding>
                         <Insets left="0.1" />
                      </padding></Button>
-                  <Button fx:id="buyHousing_btn" disable="true" layoutY="200.0" mnemonicParsing="false" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
+                  <Button fx:id="buyHousing_btn" disable="true" layoutY="200.0" mnemonicParsing="false" onAction="#buyHousing" prefHeight="50.0" styleClass="user_actions_btn" stylesheets="@style.css" AnchorPane.leftAnchor="12.0">
                      <graphic>
                         <ImageView fitHeight="50.0" fitWidth="458.0" pickOnBounds="true" preserveRatio="true">
                            <image>
@@ -106,7 +106,7 @@
                   <Label layoutX="110.0" layoutY="30.0" text="Other Player Info" />
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="160.0" prefWidth="94.0" AnchorPane.rightAnchor="0.0">
+            <AnchorPane prefHeight="160.0" prefWidth="94.0" AnchorPane.rightAnchor="10.0">
                <children>
                   <AnchorPane fx:id="hamburgerBackground_ap" layoutX="146.0" prefHeight="43.0" prefWidth="51.0" style="-fx-background-color: gray;" visible="false" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                   <Button fx:id="hamburger_btn" mnemonicParsing="false" onAction="#burgerMenuClicked" styleClass="hamburger_btn" stylesheets="@style.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -146,6 +146,8 @@
             </Label>
          </children>
       </AnchorPane>
+      <AnchorPane layoutY="268.0" prefHeight="252.0" prefWidth="672.0" visible="false" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane layoutY="268.0" prefHeight="252.0" prefWidth="462.0" style="-fx-background-color: white;" visible="false" AnchorPane.rightAnchor="47.0" />
       <AnchorPane fx:id="outerBoard_ap" layoutX="-2.0" layoutY="-4.0" prefHeight="744.0" prefWidth="725.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="555.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane fx:id="innerBoard_ap" prefHeight="494.0" prefWidth="471.0" AnchorPane.bottomAnchor="115.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="115.0" AnchorPane.topAnchor="115.0">

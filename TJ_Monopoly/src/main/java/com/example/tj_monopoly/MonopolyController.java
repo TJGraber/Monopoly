@@ -19,6 +19,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -76,6 +78,7 @@ public class MonopolyController implements Initializable {
     Audio audio = new Audio();
     AnchorPane[] spaces;
     Tile[] tiles = new Tile[40];
+    ArrayList<Property> properties = new ArrayList<>();
     Property[][] monopolies = new Property[8][];
     String currentColor = "";
     int monopolyRowCounter = 0;
@@ -92,6 +95,8 @@ public class MonopolyController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        setUpMonopolyJaggedArray();
 
         audio.setFile(4);
         audio.play();
@@ -130,16 +135,17 @@ public class MonopolyController implements Initializable {
 
                 color = getPropertyColor(i);
                 tileImg = getTileImage(i, 2);
-
                 Label priceLbl = (Label) spaces[i].getChildren().get(1);
-                property = new Property(tileNames[i], color, priceLbl.getText(), null, false, false, 0, false);
+                String pricePerHouse = getPropertyHousePrice(color);
+
+                property = new Property(tileNames[i], color, priceLbl.getText(), pricePerHouse, null, false, false, 0, false);
                 isProperty = true;
 
                 boolean isStation = isStation(i);
                 boolean isVehicle = isVehicle(i, isCorner);
 
                 if(!isStation && !isVehicle){
-                    setUpMonopolies(property);
+                    properties.add(property);
                 }
 
             }else{
@@ -155,6 +161,7 @@ public class MonopolyController implements Initializable {
             tiles[i] = new Tile(tileNames[i], property, isProperty, spaces[i], tileImg, isCorner, isChanceOrChest);
         }
 
+        setUpMonopolies();
         printMonopolies();
     }
     public String getPropertyColor(int _index){
@@ -178,6 +185,24 @@ public class MonopolyController implements Initializable {
         ImageView imgV = (ImageView) spaces[_index].getChildren().get(_childIndex);
         return imgV.getImage();
     }
+    private String getPropertyHousePrice(String _color){
+        String pricePerHouse = "$";
+
+        if(_color.equals("brown") || _color.equals("cyan")){
+            pricePerHouse += "50";
+        }
+        else if(_color.equals("pink") || _color.equals("orange")){
+            pricePerHouse += "100";
+        }
+        else if(_color.equals("red") || _color.equals("yellow")){
+            pricePerHouse += "150";
+        }
+        else if(_color.equals("green") || _color.equals("blue")){
+            pricePerHouse += "200";
+        }
+
+        return pricePerHouse;
+    }
     private boolean isStation(int _index){
         //12 and 28 are locations of the 2 stations
         return _index == 12 || _index == 28;
@@ -186,37 +211,42 @@ public class MonopolyController implements Initializable {
         //Is multiple of 5 but not multiple of 10 (not a corner)
         return _index % 5 == 0 && !_isCorner;
     }
-    private void setUpMonopolies(Property _property){
+    public void setUpMonopolyJaggedArray(){
+        monopolies[0] = new Property[2];
+        monopolies[1] = new Property[3];
+        monopolies[2] = new Property[3];
+        monopolies[3] = new Property[3];
+        monopolies[4] = new Property[3];
+        monopolies[5] = new Property[3];
+        monopolies[6] = new Property[3];
+        monopolies[7] = new Property[2];
+    }
+    private void setUpMonopolies(){
+        int count = 0;
+        for(int row = 0; row < monopolies.length; row++){
+            for(int col = 0; col < monopolies[row].length; col++){
 
-        //jaggedArray = [4][]
-        //[0] = new array[2]
-        //[1] = new array[3]
-        //[2] = new array[2]
-        //[3] = new array[3]
-
-        String newColor = _property.getColor();
-
-
-        if(!currentColor.equals(newColor)){
-            monopolyRowCounter++;
-            monopolyColCounter = 0;
+                monopolies[row][col] = properties.get(count);
+                count++;
+            }
         }
-
-        monopolies[monopolyRowCounter][monopolyColCounter] = _property;
-        System.out.println(currentColor);
-
-        monopolyColCounter++;
-        currentColor = newColor;
     }
     public void printMonopolies(){
         for(int row = 0; row < monopolies.length; row++){
+
+            System.out.print(monopolies[row][0].getColor() + "s: ");
+
             for(int col = 0; col < monopolies[row].length; col++){
-                System.out.println(monopolies[row][col].getColor());
+
+                System.out.print(monopolies[row][col].getName() + ", ");
             }
+
+            System.out.println();
         }
     }
     public void setUpLabels(){
         playerProperties_tv.setPlaceholder(new Label("No Properties Owned"));
+        playerProperties_tv.setSelectionModel(null);
         playerMoney_lbl.setText("$" + player.getMoney());
         player_lbl.setText(player.getPlayerName());
     }
@@ -322,7 +352,7 @@ public class MonopolyController implements Initializable {
 //        die2Num = 1;
 
         int numberOfSpaces = die1Num + die2Num;
-        //numberOfSpaces = 38;
+        numberOfSpaces = 1;
 
         //region Rolled doubles
         rolledDoubles = die1Num == die2Num;
@@ -729,11 +759,13 @@ public class MonopolyController implements Initializable {
         property.setOwned(true);
         property.setOwner(player);
         player.addProperty(property);
+
         buyProperty_btn.setDisable(true);
 
+        checkForNewMonopoly();
+        setAllowedUserActions();
         updateSideUILabels();
         addPropertyToPropertyTable();
-
     }
 
     public void addPropertyToPropertyTable(){
@@ -748,6 +780,68 @@ public class MonopolyController implements Initializable {
         hotel_tc.setCellValueFactory(new PropertyValueFactory<>("hasHotelString"));
 
         playerProperties_tv.setItems(observableProperties);
+    }
+
+    //region Handle Monopolies
+    private void checkForNewMonopoly(){
+
+        for(int row = 0; row < monopolies.length; row++){
+            boolean ownsAllPropertiesInRow = true;
+
+            for(int col = 0; col < monopolies[row].length; col++){
+
+                if(!playerOwnsProperty(monopolies[row][col])){
+                    ownsAllPropertiesInRow = false;
+                }
+            }
+
+            if(ownsAllPropertiesInRow && !playerAlreadyHasThisMonopoly(row)){
+                addMonopolyToPlayer(row);
+            }
+        }
+    }
+    private boolean playerOwnsProperty(Property _property){
+
+        for(int i = 0; i < player.getProperties().size(); i++){
+            if(_property == player.getProperties().get(i)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    private boolean playerAlreadyHasThisMonopoly(int _row){
+
+        if(player.getMonopolies().isEmpty()){
+            return false;
+        }
+
+        String monopolyColor = monopolies[_row][0].getColor();
+
+        for(int i = 0; i < player.getMonopolies().size(); i++){
+            String playerMonopolyColor = player.getMonopolies().get(i).getColor();
+
+            if(playerMonopolyColor.equals(monopolyColor)){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    private void addMonopolyToPlayer(int _row){
+        ArrayList<Property> newMonopolyProperties = new ArrayList<>(Arrays.asList(monopolies[_row]));
+        player.addMonopoly(newMonopolyProperties);
+    }
+    //endregion
+
+    public void buyHousing(){
+
+
+
+
+        int pricePerHouse = player.getMonopolies().getFirst().getPricePerHouseAsInt();
+
+        lostMoney(pricePerHouse);
     }
 
     public void endTurn(){

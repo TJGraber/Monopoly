@@ -90,4 +90,8 @@ public class Player {
         properties.add(_property);
     }
 
+    public void addMonopoly(ArrayList<Property> _newMonopolyProperties){
+        monopolies.addAll(_newMonopolyProperties);
+    }
+
 }

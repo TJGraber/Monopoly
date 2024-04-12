@@ -2,17 +2,18 @@ package com.example.tj_monopoly;
 
 public class Property {
 
-    private String name, color, price, mortgageValue;
+    private String name, color, price, pricePerHouse, mortgageValue;
     private Player owner;
     private boolean isOwned, isMortgaged, hasHotel;
     private int numberHouses;
 
     private String isMortgagedString, hasHotelString;
 
-    public Property(String _name, String _color, String _price, Player _owner, boolean _isOwned, boolean _isMortgaged, int _numHouses, boolean _hasHotel){
+    public Property(String _name, String _color, String _price, String _pricePerHouse, Player _owner, boolean _isOwned, boolean _isMortgaged, int _numHouses, boolean _hasHotel){
         name = _name;
         color = _color;
         price = _price;
+        pricePerHouse = _pricePerHouse;
         owner = _owner;
         isOwned = _isOwned;
         isMortgaged = _isMortgaged;
@@ -55,6 +56,12 @@ public class Property {
     }
     public int getPriceAsInt(){
         return Integer.parseInt(price.substring(1));
+    }
+    public String getPricePerHouseAsString(){
+        return pricePerHouse;
+    }
+    public int getPricePerHouseAsInt(){
+        return Integer.parseInt(pricePerHouse.substring(1));
     }
     public Player getOwner(){
         return owner;
