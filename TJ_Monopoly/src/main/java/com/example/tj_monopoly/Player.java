@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Player {
 
     private String playerName;
-    private int currentTileIndex, money;
+    private int currentTileIndex, money, turnsSpentInJail;
     private ImageView playerIcon;
     private boolean inJail, hasRolled;
 
@@ -75,6 +75,14 @@ public class Player {
 
     public ArrayList<Property> getMonopolies(){
         return monopolies;
+    }
+
+    public int getTurnsSpentInJail(){
+        return turnsSpentInJail;
+    }
+
+    public void setTurnsSpentInJail(int _turnsInJail){
+        turnsSpentInJail = _turnsInJail;
     }
     //endregion
 

@@ -28,24 +28,28 @@ public class MonopolyController implements Initializable {
 
     //region FXML Components
     @FXML
-    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, endTurn_btn, mortgageProperty_btn, buyHousing_btn;
+    Button firstDie_btn, secondDie_btn, openCard_btn, hamburger_btn, buyProperty_btn, trade_btn, mortgageProperty_btn,
+            buyHousing_btn, endTurn_btn, mortgageMenu_btn, unmortgageMenu_btn, buyHouse_btn, sellHouse_btn, buyHotel_btn, sellHotel_btn;
     @FXML
-    ImageView firstDie_img, secondDie_img, playerPiece1, tilePreview_img, hamburgerIcon_img;
+    ImageView firstDie_img, secondDie_img, playerPiece1, tilePreview_img, hamburgerIcon_img, lightsaber_img;
     @FXML
     AnchorPane space0, space1, space2, space3, space4, space5, space6, space7, space8, space9, space10, space11,
             space12, space13, space14, space15, space16, space17, space18, space19, space20, space21, space22, space23,
             space24, space25, space26, space27, space28, space29, space30, space31, space32, space33, space34, space35,
             space36, space37, space38, space39;
     @FXML
-    AnchorPane outerBoard_ap, innerBoard_ap, tilePreviewColor_ap, tilePreviewCard_ap, hamburgerMenu_ap, hamburgerBackground_ap;
+    AnchorPane outerBoard_ap, innerBoard_ap, tilePreviewColor_ap, tilePreviewCard_ap, hamburgerMenu_ap, hamburgerBackground_ap,
+            lightsaberMenu_ap, blockButtonPress_ap, tradeMenu_ap, mortgagePropertyMenu_ap, buyHousingMenu_ap;
     @FXML
-    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyChange_lbl, playerMoney_lbl, landedOn_lbl, ownedBy_lbl, moneyMagnitude_lbl, player_lbl;
+    Label tilePreviewPrice_lbl, tilePreviewName_lbl, moneyGained_lbl, moneyLost_lbl, playerMoney_lbl, landedOn_lbl, ownedBy_lbl, moneyMagnitude_lbl, player_lbl;
     @FXML
     TableView<Property> playerProperties_tv;
     @FXML
     TableColumn<Property, String> property_tc, mortgageValue_tc, mortgaged_tc, hotel_tc;
     @FXML
     TableColumn<Property, Integer> houses_tc;
+    @FXML
+    ComboBox<Property> properties_cmb, monopolyProperties_cmb;
     //endregion
 
     Image[] diceImages = {
@@ -76,10 +80,15 @@ public class MonopolyController implements Initializable {
 
     Player player;
     Audio audio = new Audio();
+    ArrayList<Player> players = new ArrayList<>();
     AnchorPane[] spaces;
     Tile[] tiles = new Tile[40];
     ArrayList<Property> properties = new ArrayList<>();
     Property[][] monopolies = new Property[8][];
+    int housesLeft = 32;
+    int hotelsLeft = 12;
+    Property propertyToBeMortgaged;
+    Property propertyToBuyHousing;
     String currentColor = "";
     int monopolyRowCounter = 0;
     int monopolyColCounter = 0;
@@ -103,6 +112,16 @@ public class MonopolyController implements Initializable {
         audio.loop();
 
         pulseDice();
+
+        properties_cmb.valueProperty().addListener((observable, oldValue, selectedProperty) -> {
+            propertyToBeMortgaged = selectedProperty;
+            setMortgageButtons();
+        });
+
+        monopolyProperties_cmb.valueProperty().addListener((observable, oldValue, selectedProperty) -> {
+            propertyToBuyHousing = selectedProperty;
+            setHousingButtons();
+        });
     }
     int randomIndexD1;
     int randomIndexD2;
@@ -110,6 +129,7 @@ public class MonopolyController implements Initializable {
     //region Setup
     public void setUpPlayers(){
         player = new Player("Player 1", 0, playerPiece1, startingMoney, false, false);
+        players.add(player);
     }
     public void setUpSpaces(){
         spaces = new AnchorPane[]{space0, space1, space2, space3, space4, space5, space6, space7, space8, space9, space10, space11,
@@ -162,7 +182,6 @@ public class MonopolyController implements Initializable {
         }
 
         setUpMonopolies();
-        printMonopolies();
     }
     public String getPropertyColor(int _index){
         //String colorStyle = ": white;";
@@ -348,32 +367,25 @@ public class MonopolyController implements Initializable {
 
     public void handleBoardAfterDiceRoll(int die1Num, int die2Num){
 
-//        die1Num = 1;
-//        die2Num = 1;
+        die1Num = 1;
+        die2Num = 0;
 
         int numberOfSpaces = die1Num + die2Num;
-        numberOfSpaces = 1;
 
-        //region Rolled doubles
+
         rolledDoubles = die1Num == die2Num;
+        handleDoubles();
 
-        if(rolledDoubles){
-            player.setHasRolled(false);
-            doublesInARow++;
-        }else{
-            doublesInARow = 0;
+        handleJail();
+        if(player.isInJail()){
+            numberOfSpaces = 0;
         }
-        if(doublesInARow >= 3){
-            //goToJail();
-
-            //numberOfSpaces = Math.abs(10 - player.getCurrentTileIndex());
-        }
-        //endregion
         
         int tileBeforeMove = player.getCurrentTileIndex();
 
         //Checking to see if new tile will be going back to start of list (going to or past go)
         newTileIndex = (tileBeforeMove + numberOfSpaces) % tiles.length;
+
         player.setCurrentTileIndex(newTileIndex);
         currentTile = tiles[newTileIndex];
 
@@ -393,6 +405,33 @@ public class MonopolyController implements Initializable {
         handlePassedGo(tileBeforeMove);
 
         updateSideUILabels();
+    }
+
+    public void handleDoubles(){
+        if(rolledDoubles){
+            player.setHasRolled(false);
+            doublesInARow++;
+        }else{
+            doublesInARow = 0;
+        }
+
+        if(doublesInARow >= 3){
+            goToJail();
+        }
+        if(player.isInJail() && rolledDoubles){
+            getOutOfJail();
+        }
+    }
+
+    public void handleJail(){
+        if(player.isInJail()){
+            player.setTurnsSpentInJail(player.getTurnsSpentInJail() + 1);
+        }
+
+        if(player.getTurnsSpentInJail() == 3){
+            getOutOfJail();
+            lostMoney(50);
+        }
     }
 
     private int getNumSidesJumped(int _boardSideBeforeMoving, int _boardSideAfterMoving){
@@ -440,14 +479,15 @@ public class MonopolyController implements Initializable {
         handleNecessaryTileActions();
         setAllowedUserActions();
 
-        spaces[newTileIndex].getChildren().add(player.getPlayerIcon());
+        if(!player.isInJail()){
+            spaces[newTileIndex].getChildren().add(player.getPlayerIcon());
+        }
 
         //Set player icon to default X and Y
         player.getPlayerIcon().setLayoutX(25);
         player.getPlayerIcon().setLayoutY(25);
 
         if(!currentTile.isCornerTile()){
-
             //If new tile is not a corner tile, offset is necessary based on which side of the board
             //the new tile is on. By default, player location is set to corner offset
             if(_boardSideAfterMoving == 0 || _boardSideAfterMoving == 2){
@@ -455,6 +495,12 @@ public class MonopolyController implements Initializable {
             }else if(_boardSideAfterMoving == 1 || _boardSideAfterMoving == 3){
                 player.getPlayerIcon().setLayoutY(3);
             }
+        }
+
+        //Player lands on jail but is just visiting
+        if(newTileIndex == 10 && !player.isInJail()){
+            player.getPlayerIcon().setLayoutX(5);
+            player.getPlayerIcon().setLayoutY(50);
         }
     }
 
@@ -491,7 +537,7 @@ public class MonopolyController implements Initializable {
                 break;
             case 30:
                 //Go to Jail
-                //goToJail();
+                goToJail();
 
                 break;
             case 38:
@@ -508,15 +554,21 @@ public class MonopolyController implements Initializable {
         //is property owned && not mortgaged -> subtract rent
         if (property.isOwned() && !property.isMortgaged()) {
 
-            rentDue = property.getPriceAsInt() / 10;
+            //Check to see if current player owns property
+            if(property.getOwner().equals(player)){
+                return -1;
+            }
 
-            if(property.getNumberHouses() >= 1){
+            rentDue = property.getPriceAsInt() / 10;
+            int numHouses = property.getNumberHouses();
+
+            if(numHouses >= 1){
                 rentDue *= 4;
             }
-            if(property.getNumberHouses() >= 2){
+            if(numHouses >= 2){
                 rentDue *= 3;
             }
-            if(property.getNumberHouses() >= 3){
+            if(numHouses >= 3){
 
                 if(rentDue <= 250){
                     rentDue *= 3;
@@ -525,7 +577,7 @@ public class MonopolyController implements Initializable {
                 }
 
             }
-            if(property.getNumberHouses() == 4){
+            if(numHouses == 4){
                 rentDue += 150;
             }
 
@@ -533,21 +585,31 @@ public class MonopolyController implements Initializable {
                 rentDue = property.getPriceAsInt() * 5;
             }
 
-            //Check to see if current player owns property
-            if(property.getOwner().equals(player)){
-                rentDue = -1;
-            }
         }
 
         return rentDue;
     }
     public void goToJail(){
         player.setInJail(true);
-        //player.setCurrentTileIndex(10);
+        player.setTurnsSpentInJail(0);
+        player.setCurrentTileIndex(10);
+        player.setHasRolled(true);
 
-        //spaces[10].getChildren().add(player.getPlayerIcon());
+        doublesInARow = 0;
+        rolledDoubles = false;
 
-        //setAllowedUserActions();
+        spaces[10].getChildren().add(player.getPlayerIcon());
+
+        audio.setFile(9);
+        audio.play();
+
+        setAllowedUserActions();
+    }
+    public void getOutOfJail(){
+        player.setInJail(false);
+        player.setTurnsSpentInJail(0);
+
+        setAllowedUserActions();
     }
     public void setAllowedUserActions(){
 
@@ -557,6 +619,7 @@ public class MonopolyController implements Initializable {
             endTurn_btn.setDisable(true);
         }else{
 
+            stopPulsingDice();
             endTurn_btn.setDisable(false);
         }
 
@@ -570,7 +633,7 @@ public class MonopolyController implements Initializable {
             firstDie_btn.setDisable(true);
             secondDie_btn.setDisable(true);
 
-            stopPulsingDice();
+            //stopPulsingDice();
         }else{
             firstDie_btn.setDisable(false);
             secondDie_btn.setDisable(false);
@@ -593,11 +656,19 @@ public class MonopolyController implements Initializable {
 
         }
 
+        //Stop pulsing if dice are disabled
+        if(firstDie_btn.isDisabled()){
+            stopPulsingDice();
+        }
+
         //Disable buy housing button if player has no monopolies
         buyHousing_btn.setDisable(player.getMonopolies().isEmpty());
 
         //Disable mortgage property button if the user has no properties
         mortgageProperty_btn.setDisable(player.getProperties().isEmpty());
+
+        //Disable trade button if no players have properties
+        trade_btn.setDisable(!doAnyPlayersHaveProperty());
     }
 
     private boolean tileCanBePurchased(){
@@ -608,6 +679,15 @@ public class MonopolyController implements Initializable {
             return !currentTile.getProperty().isOwned();
         }
 
+        return false;
+    }
+
+    private boolean doAnyPlayersHaveProperty(){
+        for(int i = 0; i < players.size(); i++){
+            if(!players.get(i).getProperties().isEmpty()){
+                return true;
+            }
+        }
         return false;
     }
     //endregion
@@ -765,10 +845,10 @@ public class MonopolyController implements Initializable {
         checkForNewMonopoly();
         setAllowedUserActions();
         updateSideUILabels();
-        addPropertyToPropertyTable();
+        updatePlayerPropertyTable();
     }
 
-    public void addPropertyToPropertyTable(){
+    public void updatePlayerPropertyTable(){
         ObservableList<Property> observableProperties = FXCollections.observableArrayList();
 
         observableProperties.addAll(player.getProperties());
@@ -780,6 +860,18 @@ public class MonopolyController implements Initializable {
         hotel_tc.setCellValueFactory(new PropertyValueFactory<>("hasHotelString"));
 
         playerProperties_tv.setItems(observableProperties);
+
+        System.out.println("heyyy");
+
+        //Trying to figure out how to get rows within the table so that I can style the background
+        //based on the color of the property
+
+//        playerProperties_tv.getRowFactory(0)
+//        playerProperties_tv.setRowFactory(0);
+
+        //TableCell<Property, String> cell = TableColumn.DEFAULT_CELL_FACTORY.call(property_tc);
+//        TableCell<Property, String> cell = property_tc.getCellFactory();
+//        Object item = cell.getTableRow().getItem();
     }
 
     //region Handle Monopolies
@@ -834,26 +926,213 @@ public class MonopolyController implements Initializable {
     }
     //endregion
 
+    public void trade(){
+        deployLightsaberMenu(tradeMenu_ap);
+    }
+
+    public void mortgageProperty(){
+
+        deployLightsaberMenu(mortgagePropertyMenu_ap);
+    }
+
     public void buyHousing(){
 
+        deployLightsaberMenu(buyHousingMenu_ap);
 
-
-
-        int pricePerHouse = player.getMonopolies().getFirst().getPricePerHouseAsInt();
-
-        lostMoney(pricePerHouse);
+        //int pricePerHouse = player.getMonopolies().getFirst().getPricePerHouseAsInt();
+        //lostMoney(pricePerHouse);
     }
 
     public void endTurn(){
         player.setHasRolled(false);
 
         pulseDice();
-        movePreviewCardBack();
+
+        if(isPreviewCardCentered){
+            movePreviewCardBack();
+        }
 
         setAllowedUserActions();
 
         //Players should not be able to change their mind and buy a property after passing on it the turn prior
         buyProperty_btn.setDisable(true);
+    }
+
+    //region Mortgage
+    public void setMortgageButtons(){
+
+        mortgageMenu_btn.setDisable(true);
+        unmortgageMenu_btn.setDisable(true);
+
+        //If property is not already mortgaged, activate mortgage button
+        if(!propertyToBeMortgaged.isMortgaged()){
+            mortgageMenu_btn.setDisable(false);
+        }else{
+            //If property is mortgaged and player has enough money to unmortgage, activate unmortgage button
+            if(player.getMoney() >= propertyToBeMortgaged.getUnmortgageCostAsInt()){
+                unmortgageMenu_btn.setDisable(false);
+            }
+        }
+    }
+    public void mortgageSelectedProperty(){
+        propertyToBeMortgaged.setMortgaged(true);
+        gainedMoney(propertyToBeMortgaged.getMortgageValueAsInt());
+
+        setMortgageButtons();
+        updatePlayerPropertyTable();
+    }
+    public void unmortgageSelectedProperty(){
+        propertyToBeMortgaged.setMortgaged(false);
+        lostMoney(propertyToBeMortgaged.getUnmortgageCostAsInt());
+
+        setMortgageButtons();
+        updatePlayerPropertyTable();
+    }
+    //endregion
+
+    //region Housing
+    public void setHousingButtons(){
+
+        buyHouse_btn.setDisable(true);
+        sellHouse_btn.setDisable(true);
+        buyHotel_btn.setDisable(true);
+        sellHotel_btn.setDisable(true);
+
+        if(propertyToBuyHousing != null){
+
+            int houses = propertyToBuyHousing.getNumberHouses();
+
+            //If player has enough money, houses are evenly spread, property has less than 4 houses,
+            //there are houses left in the housing pool, and property doesn't have a hotel, enable buyHousing button
+            if(houses < 4 && playerHasHousingFunds() && housesAreEvenlySpread() && housesLeft > 0 && !propertyToBuyHousing.hasHotel()){
+                buyHouse_btn.setDisable(false);
+            }
+            //If property has any houses, allow player to sell them
+            if(houses > 0){
+                sellHouse_btn.setDisable(false);
+            }
+            //If property has 4 houses, houses are evenly spread, has enough money, and doesn't already have
+            // a hotel, allow player to buy hotel
+            if(houses == 4 && playerHasHousingFunds() && housesAreEvenlySpread() && hotelsLeft > 0 && !propertyToBuyHousing.hasHotel()){
+                buyHotel_btn.setDisable(false);
+            }
+            //If property has a hotel, allow player to sell it
+            if(propertyToBuyHousing.hasHotel()){
+                sellHotel_btn.setDisable(false);
+            }
+        }
+    }
+    public boolean playerHasHousingFunds(){
+        return player.getMoney() >= propertyToBuyHousing.getPriceAsInt();
+    }
+    public boolean housesAreEvenlySpread(){
+
+        ArrayList<Integer> numHousesOnProperties = new ArrayList<>();
+
+        //Add 1 house to the property a house might be added to
+        propertyToBuyHousing.setNumberHouses(propertyToBuyHousing.getNumberHouses() + 1);
+
+        //Get all the houses of properties in a monopoly
+        for(int i = 0; i < player.getMonopolies().size(); i++){
+            if(player.getMonopolies().get(i).getColor().equals(propertyToBuyHousing.getColor())){
+                numHousesOnProperties.add(player.getMonopolies().get(i).getNumberHouses());
+            }
+        }
+
+        //Compare each number of houses between the properties in a monopoly
+        //They should all be within 1 of each other
+        int min = numHousesOnProperties.getFirst();
+        int max = numHousesOnProperties.getFirst();
+
+        for(int i = 1; i < numHousesOnProperties.size(); i ++){
+            if(numHousesOnProperties.get(i) > max){
+                max = numHousesOnProperties.get(i);
+            }
+            if(numHousesOnProperties.get(i) < min){
+                min = numHousesOnProperties.get(i);
+            }
+        }
+
+        propertyToBuyHousing.setNumberHouses(propertyToBuyHousing.getNumberHouses() - 1);
+
+        return max - min <= 1;
+    }
+
+    public void buyHouse(){
+        propertyToBuyHousing.setNumberHouses(propertyToBuyHousing.getNumberHouses() + 1);
+        lostMoney(propertyToBuyHousing.getPricePerHouseAsInt());
+
+        housesLeft--;
+        setHousingButtons();
+        updatePlayerPropertyTable();
+    }
+    public void sellHouse(){
+        propertyToBuyHousing.setNumberHouses(propertyToBuyHousing.getNumberHouses() - 1);
+        gainedMoney(propertyToBuyHousing.getPricePerHouseAsInt() / 2);
+
+        housesLeft++;
+        setHousingButtons();
+        updatePlayerPropertyTable();
+    }
+    public void buyHotel(){
+        propertyToBuyHousing.setHasHotel(true);
+        lostMoney(propertyToBuyHousing.getPricePerHouseAsInt());
+
+        hotelsLeft--;
+        setHousingButtons();
+        updatePlayerPropertyTable();
+    }
+    public void sellHotel(){
+        propertyToBuyHousing.setHasHotel(false);
+        gainedMoney(propertyToBuyHousing.getPricePerHouseAsInt() / 2);
+
+        hotelsLeft++;
+        setHousingButtons();
+        updatePlayerPropertyTable();
+    }
+    //endregion
+    //endregion
+
+    //region Lightsaber Menu
+    public void deployLightsaberMenu(AnchorPane _menu_ap){
+
+        blockButtonPress_ap.setVisible(true);
+        _menu_ap.setVisible(true);
+
+        properties_cmb.setItems(FXCollections.observableList(player.getProperties()));
+        monopolyProperties_cmb.setItems(FXCollections.observableList(player.getMonopolies()));
+
+        TranslateTransition deployLightsaberTransition = new TranslateTransition(Duration.millis(500), lightsaberMenu_ap);
+        deployLightsaberTransition.setToX(-688);
+        deployLightsaberTransition.setCycleCount(1);
+        deployLightsaberTransition.play();
+
+        audio.setFile(7);
+        audio.play();
+    }
+    public void retractLightsaberMenu(){
+
+        TranslateTransition retractLightsaberTransition = new TranslateTransition(Duration.millis(1500), lightsaberMenu_ap);
+        retractLightsaberTransition.setToX(0);
+        retractLightsaberTransition.setCycleCount(1);
+        retractLightsaberTransition.play();
+
+        retractLightsaberTransition.setOnFinished(actionEvent -> {
+            disableLightsaberPanes();
+            setAllowedUserActions();
+        });
+
+        audio.setFile(8);
+        audio.play();
+    }
+    private void disableLightsaberPanes(){
+        blockButtonPress_ap.setVisible(false);
+
+        //mortgageProperty_tf.clear();
+
+        tradeMenu_ap.setVisible(false);
+        mortgagePropertyMenu_ap.setVisible(false);
+        buyHousingMenu_ap.setVisible(false);
     }
     //endregion
 
@@ -876,21 +1155,21 @@ public class MonopolyController implements Initializable {
     }
     public void moneyGainedAnimation(int _moneyGained){
 
-        moneyChange_lbl.setTextFill(MONEYGREEN);
-        moneyChange_lbl.setText("+$" + _moneyGained);
+        //moneyChange_lbl.setTextFill(MONEYGREEN);
+        moneyGained_lbl.setText("+$" + _moneyGained);
 
-        fadeAndMoveMoneyChange();
+        fadeAndMoveMoneyChange(moneyGained_lbl);
     }
     public void moneyLostAnimation(int _moneyLost){
 
-        moneyChange_lbl.setTextFill(NEGATIVERED);
-        moneyChange_lbl.setText("-$" + _moneyLost);
+        //moneyChange_lbl.setTextFill(NEGATIVERED);
+        moneyLost_lbl.setText("-$" + _moneyLost);
 
-        fadeAndMoveMoneyChange();
+        fadeAndMoveMoneyChange(moneyLost_lbl);
     }
-    public void fadeAndMoveMoneyChange(){
+    public void fadeAndMoveMoneyChange(Label _moneyChange_lbl){
 
-        FadeTransition fadeMoneyText = new FadeTransition(Duration.millis(1000), moneyChange_lbl);
+        FadeTransition fadeMoneyText = new FadeTransition(Duration.millis(1000), _moneyChange_lbl);
         fadeMoneyText.setFromValue(0.0);
         fadeMoneyText.setToValue(1);
         fadeMoneyText.setCycleCount(2);
@@ -898,7 +1177,7 @@ public class MonopolyController implements Initializable {
 
         fadeMoneyText.play();
 
-        TranslateTransition moveMoneyText = new TranslateTransition(Duration.millis(2000), moneyChange_lbl);
+        TranslateTransition moveMoneyText = new TranslateTransition(Duration.millis(2000), _moneyChange_lbl);
         moveMoneyText.setToY(0.0);
         moveMoneyText.setToY(550);
         moveMoneyText.setCycleCount(1);
@@ -910,8 +1189,11 @@ public class MonopolyController implements Initializable {
         });
     }
     public void resetMoneyChangeLabel(){
-        moneyChange_lbl.setTranslateY(0);
-        moneyChange_lbl.setOpacity(0);
+        moneyGained_lbl.setTranslateY(0);
+        moneyGained_lbl.setOpacity(0);
+
+        moneyLost_lbl.setTranslateY(0);
+        moneyLost_lbl.setOpacity(0);
     }
     //endregion
 

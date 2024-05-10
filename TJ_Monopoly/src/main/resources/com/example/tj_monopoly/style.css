@@ -32,7 +32,7 @@
     -fx-border-style: solid hidden solid solid;
 }
 
-.die_btn, .openCard_btn, .hamburger_btn, .hamburgerMenu_btn, .user_actions_btn{
+.die_btn, .openCard_btn, .hamburger_btn, .hamburgerMenu_btn, .user_actions_btn, .closeLightsaber_btn{
     -fx-cursor: hand;
     -fx-background-color: none;
 }

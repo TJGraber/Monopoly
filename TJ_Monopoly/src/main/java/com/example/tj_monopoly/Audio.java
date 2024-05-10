@@ -21,6 +21,9 @@ public class Audio {
             soundURL[4] = new URL("file:TJ_Monopoly/src/main/resources/audio/tatooineTheme.wav");
             soundURL[5] = new URL("file:TJ_Monopoly/src/main/resources/audio/openCard.wav");
             soundURL[6] = new URL("file:TJ_Monopoly/src/main/resources/audio/studPickup.wav");
+            soundURL[7] = new URL("file:TJ_Monopoly/src/main/resources/audio/lightsaberActivate.wav");
+            soundURL[8] = new URL("file:TJ_Monopoly/src/main/resources/audio/lightsaberRetract.wav");
+            soundURL[9] = new URL("file:TJ_Monopoly/src/main/resources/audio/starWarsSiren.wav");
 
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);

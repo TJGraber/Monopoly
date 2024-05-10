@@ -76,6 +76,7 @@ public class Property {
         isOwned = _isOwned;
     }
     public boolean isMortgaged(){
+        setUpNonParameterVariables();
         return isMortgaged;
     }
     public int getNumberHouses(){
@@ -90,8 +91,19 @@ public class Property {
     public void setHasHotel(boolean _hasHotel){
         hasHotel = _hasHotel;
     }
+    public void setMortgaged(boolean _isMortgaged){
+        isMortgaged = _isMortgaged;
+    }
     public String getMortgageValue(){
         return mortgageValue;
+    }
+    public int getMortgageValueAsInt(){
+        return Integer.parseInt(mortgageValue.substring(1));
+    }
+    public int getUnmortgageCostAsInt(){
+        int val = Integer.parseInt(mortgageValue.substring(1));
+        int unmortgageCost = (int) (val + val * 0.1);
+        return unmortgageCost;
     }
     public void setMortgageValue(String _mortgageValue){
         mortgageValue = _mortgageValue;
@@ -101,5 +113,9 @@ public class Property {
     }
     public String getHasHotelString(){
         return hasHotelString;
+    }
+
+    public String toString(){
+        return name;
     }
 }
