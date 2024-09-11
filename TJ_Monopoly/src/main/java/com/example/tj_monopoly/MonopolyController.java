@@ -367,8 +367,8 @@ public class MonopolyController implements Initializable {
 
     public void handleBoardAfterDiceRoll(int die1Num, int die2Num){
 
-        die1Num = 1;
-        die2Num = 0;
+//        die1Num = 1;
+//        die2Num = 0;
 
         int numberOfSpaces = die1Num + die2Num;
 
